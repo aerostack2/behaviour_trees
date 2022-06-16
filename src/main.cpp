@@ -3,7 +3,12 @@
 
 #include "behaviortree_cpp_v3/bt_factory.h"
 
-#include "basic_behaviours.hpp"
+#include "behaviour_trees/action/takeoff_action.hpp"
+#include "behaviour_trees/action/goto_action.hpp"
+#include "behaviour_trees/action/land_action.hpp"
+#include "behaviour_trees/action/arm_service.hpp"
+#include "behaviour_trees/action/offboard_service.hpp"
+#include "behaviour_trees/condition/is_flying_condition.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -12,34 +17,25 @@
 
 #include "behaviortree_cpp_v3/loggers/bt_cout_logger.h"
 
-
-int main(int argc, char * argv[])
+int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
     auto node = std::make_shared<rclcpp::Node>("test_node");
 
-    node->declare_parameter("tree");
+    node->declare_parameter("tree", "");
     std::string tree_description = node->get_parameter("tree").as_string();
 
-    // TODO --> get namespace
-    
     BT::BehaviorTreeFactory factory;
 
-    BT::NodeBuilder builder_tk = [](const std::string& name, const BT::NodeConfiguration& config)
-    {
-        return std::make_unique<as2_behaviour_tree::TakeoffAction>(name, config, "/drone_sim_0/TakeOffBehaviour");
-    };
-
-    factory.registerBuilder<as2_behaviour_tree::TakeoffAction>("TakeOff", builder_tk);
-
-    // TODO --> new nodes to arm offboard
-
-    // TODO --> All ActionNode to NodeBuilders
-    // factory.registerNodeType<as2_behaviour_tree::TakeoffAction>("TakeOff");
+    factory.registerNodeType<as2_behaviour_tree::ArmService>("Arm");
+    factory.registerNodeType<as2_behaviour_tree::DisarmService>("Disarm");
+    factory.registerNodeType<as2_behaviour_tree::OffboardService>("Offboard");
+    factory.registerNodeType<as2_behaviour_tree::TakeoffAction>("TakeOff");
     factory.registerNodeType<as2_behaviour_tree::GoToAction>("GoTo");
     factory.registerNodeType<as2_behaviour_tree::LandAction>("Land");
+    factory.registerNodeType<as2_behaviour_tree::IsFlyingCondition>("IsFlying");
 
-    BT::NodeConfiguration* config = new BT::NodeConfiguration();
+    BT::NodeConfiguration *config = new BT::NodeConfiguration();
     // Create the blackboard that will be shared by all of the nodes in the tree
     config->blackboard = BT::Blackboard::create();
     // Put items on the blackboard
@@ -62,7 +58,8 @@ int main(int argc, char * argv[])
     rclcpp::WallRate loopRate(std::chrono::milliseconds(10));
 
     // main BT execution loop
-    while (rclcpp::ok() && result == BT::NodeStatus::RUNNING) {
+    while (rclcpp::ok() && result == BT::NodeStatus::RUNNING)
+    {
         result = tree.tickRoot();
         ticks++;
         loopRate.sleep();

@@ -1,8 +1,32 @@
-<root>
+<?xml version="1.0"?>
+<root main_tree_to_execute="BehaviorTree">
+    <!-- ////////// -->
+    <BehaviorTree ID="ArmTakeoff">
+        <SequenceStar>
+            <Action ID="Arm" service_name="set_arming_state"/>
+            <Action ID="Offboard" service_name="set_offboard_mode"/>
+            <Action ID="TakeOff" height="{tk_height}" speed="{tk_speed}"/>
+        </SequenceStar>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <BehaviorTree ID="BehaviorTree">
+        <Delay delay_msec="5000">
+            <Fallback>
+                <Condition ID="IsFlying"/>
+                <SubTree ID="ArmTakeoff" __shared_blackboard="true" tk_height="2" tk_speed="0.5"/>
+            </Fallback>
+        </Delay>
+    </BehaviorTree>
+    <!-- ////////// -->
     <TreeNodesModel>
         <Action ID="Arm">
             <input_port default="set_arming_state" name="service_name">Arming service name</input_port>
         </Action>
+        <SubTree ID="ArmTakeoff">
+            <input_port default="false" name="__shared_blackboard">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+            <input_port default="2" name="tk_height">Takeoff Height</input_port>
+            <input_port default="0.5" name="tk_speed">Takeoff Speed</input_port>
+        </SubTree>
         <Action ID="Disarm">
             <input_port default="set_arming_state" name="service_name">Arming service name</input_port>
         </Action>
@@ -25,5 +49,6 @@
             <input_port default="0.5" name="speed">Takeoff Speed</input_port>
         </Action>
     </TreeNodesModel>
+    <!-- ////////// -->
 </root>
 
