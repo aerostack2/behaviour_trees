@@ -10,12 +10,12 @@
     </BehaviorTree>
     <!-- ////////// -->
     <BehaviorTree ID="BehaviorTree">
-        <Delay delay_msec="5000">
+        <Decorator ID="WaitForEvent" result="" topic_name="mission/start">
             <Fallback>
                 <Condition ID="IsFlying"/>
                 <SubTree ID="ArmTakeoff" __shared_blackboard="true" tk_height="2" tk_speed="0.5"/>
             </Fallback>
-        </Delay>
+        </Decorator>
     </BehaviorTree>
     <!-- ////////// -->
     <TreeNodesModel>
@@ -48,6 +48,10 @@
             <input_port default="2" name="height">Takeoff Height</input_port>
             <input_port default="0.5" name="speed">Takeoff Speed</input_port>
         </Action>
+        <Decorator ID="WaitForEvent">
+            <output_port name="result">Result</output_port>
+            <input_port name="topic_name">Event Topic Name</input_port>
+        </Decorator>
     </TreeNodesModel>
     <!-- ////////// -->
 </root>
