@@ -5,7 +5,7 @@
         <SequenceStar>
             <Action ID="TakeOff" height="2" speed="0.5"/>
             <Action ID="GoTo" max_speed="2" pose="5;5;2" yaw_angle="0.0" yaw_mode="0"/>
-            <Action ID="Land" land_speed="0.5"/>
+            <Action ID="Land" speed="0.5"/>
         </SequenceStar>
     </BehaviorTree>
     <!-- ////////// -->
