@@ -25,6 +25,9 @@
         <Action ID="Offboard">
             <input_port name="service_name" default="set_offboard_mode">Offboard service name</input_port>
         </Action>
+        <SubTree ID="RTL">
+            <input_port name="__shared_blackboard" default="false">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
+        </SubTree>
         <Action ID="TakeOff">
             <input_port name="height" default="2">Takeoff Height</input_port>
             <input_port name="speed" default="0.5">Takeoff Speed</input_port>

@@ -8,7 +8,7 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     tree = PathJoinSubstitution([
         FindPackageShare('behaviour_trees'),
-        'resource', 'takeoff.xml'
+        'resource', 'beacon.xml'
     ])
     return LaunchDescription([
         DeclareLaunchArgument('drone_id', default_value=EnvironmentVariable('AEROSTACK2_SIMULATION_DRONE_ID')),
