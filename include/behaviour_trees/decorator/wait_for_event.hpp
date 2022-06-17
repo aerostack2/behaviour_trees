@@ -6,7 +6,9 @@
 #include "behaviortree_cpp_v3/decorator_node.h"
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/u_int8_multi_array.hpp"
+#include "as2_msgs/msg/mission_event.hpp"
+#include "geometry_msgs/msg/pose.hpp"
+
 
 namespace as2_behaviour_tree
 {
@@ -26,7 +28,7 @@ namespace as2_behaviour_tree
 
             rclcpp::SubscriptionOptions sub_option;
             sub_option.callback_group = callback_group_;
-            sub_ = node_->create_subscription<std_msgs::msg::UInt8MultiArray>(
+            sub_ = node_->create_subscription<as2_msgs::msg::MissionEvent>(
                 topic_name_,
                 rclcpp::SystemDefaultsQoS(),
                 std::bind(&WaitForEvent::callback, this, std::placeholders::_1),
@@ -35,7 +37,7 @@ namespace as2_behaviour_tree
 
         static BT::PortsList providedPorts()
         {
-            return {BT::InputPort<std::string>("topic_name"), BT::OutputPort<std::vector<uint8_t>>("result")};
+            return {BT::InputPort<std::string>("topic_name"), BT::OutputPort("result")};
         }
 
     private:
@@ -49,7 +51,7 @@ namespace as2_behaviour_tree
         }
 
     private:
-        void callback(std_msgs::msg::UInt8MultiArray::SharedPtr msg)
+        void callback(as2_msgs::msg::MissionEvent::SharedPtr msg)
         {
             setOutput("result", msg->data);
             flag_ = true;
@@ -59,7 +61,7 @@ namespace as2_behaviour_tree
         rclcpp::Node::SharedPtr node_;
         rclcpp::CallbackGroup::SharedPtr callback_group_;
         rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
-        rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr sub_;
+        rclcpp::Subscription<as2_msgs::msg::MissionEvent>::SharedPtr sub_;
         std::string topic_name_;
         bool flag_ = false;
     };
