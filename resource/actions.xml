@@ -11,6 +11,9 @@
         <Action ID="Disarm">
             <input_port name="service_name" default="set_arming_state">Arming service name</input_port>
         </Action>
+        <Action ID="Echo">
+            <input_port name="data"/>
+        </Action>
         <Action ID="FollowPath"/>
         <Action ID="GoTo">
             <input_port name="max_speed">Maximum cruise speed</input_port>
@@ -28,6 +31,10 @@
         <SubTree ID="RTL">
             <input_port name="__shared_blackboard" default="false">If false (default), the Subtree has an isolated blackboard and needs port remapping</input_port>
         </SubTree>
+        <Action ID="SendEvent">
+            <input_port name="data">Data to send</input_port>
+            <input_port name="topic_name">Topic Name</input_port>
+        </Action>
         <Action ID="TakeOff">
             <input_port name="height" default="2">Takeoff Height</input_port>
             <input_port name="speed" default="0.5">Takeoff Speed</input_port>
