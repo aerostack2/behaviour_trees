@@ -25,7 +25,7 @@ namespace as2_behaviour_tree
             callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
 
             getInput("topic_name", detection_topic_name_);
-            getInput("threshold", threshold_);
+            getInput("dist_threshold", threshold_);
 
             rclcpp::SubscriptionOptions sub_option;
             sub_option.callback_group = callback_group_;
@@ -59,7 +59,7 @@ namespace as2_behaviour_tree
         static BT::PortsList providedPorts()
         {
             return {BT::InputPort<std::string>("topic_name"), 
-                    BT::InputPort<double>("threshold"),
+                    BT::InputPort<double>("dist_threshold"),
                     BT::OutputPort("pose")};
         }
 
