@@ -12,6 +12,7 @@
 #include "behaviour_trees/decorator/wait_for_event.hpp"
 #include "behaviour_trees/action/send_event.hpp"
 #include "behaviour_trees/action/echo.hpp"
+#include "behaviour_trees/condition/is_target_detected_condition.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -26,7 +27,9 @@ int main(int argc, char *argv[])
     auto node = std::make_shared<rclcpp::Node>("test_node");
 
     node->declare_parameter("tree", "");
+    node->declare_parameter("use_groot", false);
     std::string tree_description = node->get_parameter("tree").as_string();
+    bool groot_logger = node->get_parameter("use_groot").as_bool();
 
     BT::BehaviorTreeFactory factory;
 
@@ -40,6 +43,7 @@ int main(int argc, char *argv[])
     factory.registerNodeType<as2_behaviour_tree::WaitForEvent>("WaitForEvent");
     factory.registerNodeType<as2_behaviour_tree::SendEvent>("SendEvent");
     factory.registerNodeType<as2_behaviour_tree::Echo>("Echo");
+    factory.registerNodeType<as2_behaviour_tree::IsTargetDetectedCondition>("IsTargetDetected");
 
     BT::NodeConfiguration *config = new BT::NodeConfiguration();
     // Create the blackboard that will be shared by all of the nodes in the tree
@@ -53,7 +57,9 @@ int main(int argc, char *argv[])
 
     // LOGGERS
     BT::StdCoutLogger logger_cout(tree);
-    BT::PublisherZMQ groot_pub(tree);
+    if (groot_logger) {
+        BT::PublisherZMQ groot_pub(tree);
+    }
 
     // to keep track of the number of ticks it took to reach a terminal result
     int ticks = 0;

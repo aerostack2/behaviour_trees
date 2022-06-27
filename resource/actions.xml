@@ -22,6 +22,11 @@
             <input_port name="yaw_mode" default="0">Yaw mode flag: {KEEP_YAW = 0; PATH_FACING = 1; FIXED_YAW = 2}</input_port>
         </Action>
         <Condition ID="IsFlying"/>
+        <Condition ID="IsTargetDetected">
+            <input_port name="dist_threshold">Minimum distance to target</input_port>
+            <output_port name="pose">Target Pose</output_port>
+            <input_port name="topic_name">Topic Name</input_port>
+        </Condition>
         <Action ID="Land">
             <input_port name="speed" default="0.5">Landing speed</input_port>
         </Action>
