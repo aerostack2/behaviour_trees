@@ -24,7 +24,7 @@
 int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<rclcpp::Node>("test_node");
+    auto node = std::make_shared<rclcpp::Node>("bt_manager");
 
     node->declare_parameter("tree", "");
     node->declare_parameter("use_groot", false);
@@ -55,10 +55,14 @@ int main(int argc, char *argv[])
 
     auto tree = factory.createTreeFromFile(tree_description, config->blackboard);
 
+    RCLCPP_INFO(node->get_logger(), "%d", groot_logger);
+
     // LOGGERS
     BT::StdCoutLogger logger_cout(tree);
+    std::shared_ptr<BT::PublisherZMQ> groot_pub = nullptr;
+
     if (groot_logger) {
-        BT::PublisherZMQ groot_pub(tree);
+        groot_pub = std::make_shared<BT::PublisherZMQ>(tree);
     }
 
     // to keep track of the number of ticks it took to reach a terminal result
