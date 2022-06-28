@@ -53,7 +53,7 @@ namespace as2_behaviour_tree
 
                 return BT::NodeStatus::SUCCESS;
             }
-            return BT::NodeStatus::FAILURE;
+            return BT::NodeStatus::RUNNING;
         }
 
         static BT::PortsList providedPorts()
@@ -66,9 +66,11 @@ namespace as2_behaviour_tree
     private:
         void detectionCallback(geometry_msgs::msg::PoseStamped::SharedPtr msg)
         {
-            float dist = std::sqrt(std::pow(msg->pose.position.x - this->current_pose_x_, 2.0) +
-                                   std::pow(msg->pose.position.y - this->current_pose_y_, 2.0) +
-                                   std::pow(msg->pose.position.z - this->current_pose_z_, 2.0));
+            float dist = std::sqrt(std::pow(abs(msg->pose.position.x) - abs(this->current_pose_x_), 2.0) +
+                                   std::pow(abs(msg->pose.position.y) - abs(this->current_pose_y_), 2.0) +
+                                   std::pow(abs(msg->pose.position.z) - abs(this->current_pose_z_), 2.0));
+
+            RCLCPP_DEBUG(this->node_->get_logger(), "%f", dist);
             if (dist < threshold_)
             {
                 geometry_msgs::msg::PoseStamped rel_pose;
