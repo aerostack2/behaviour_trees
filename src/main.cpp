@@ -28,8 +28,12 @@ int main(int argc, char *argv[])
 
     node->declare_parameter("tree", "");
     node->declare_parameter("use_groot", false);
+    node->declare_parameter<int>("groot_client_port", 1666);
+    node->declare_parameter<int>("groot_server_port", 1667);
     std::string tree_description = node->get_parameter("tree").as_string();
     bool groot_logger = node->get_parameter("use_groot").as_bool();
+    int groot_client_port = node->get_parameter("groot_client_port").as_int();
+    int groot_server_port = node->get_parameter("groot_server_port").as_int();
 
     BT::BehaviorTreeFactory factory;
 
@@ -55,14 +59,14 @@ int main(int argc, char *argv[])
 
     auto tree = factory.createTreeFromFile(tree_description, config->blackboard);
 
-    RCLCPP_INFO(node->get_logger(), "%d", groot_logger);
+    RCLCPP_INFO(node->get_logger(), "%d %d", groot_client_port, groot_server_port);
 
     // LOGGERS
     BT::StdCoutLogger logger_cout(tree);
     std::shared_ptr<BT::PublisherZMQ> groot_pub = nullptr;
 
     if (groot_logger) {
-        groot_pub = std::make_shared<BT::PublisherZMQ>(tree);
+        groot_pub = std::make_shared<BT::PublisherZMQ>(tree, 25U, groot_client_port, groot_server_port);
     }
 
     // to keep track of the number of ticks it took to reach a terminal result
