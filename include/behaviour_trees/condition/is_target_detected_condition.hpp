@@ -73,13 +73,13 @@ namespace as2_behaviour_tree
             RCLCPP_DEBUG(this->node_->get_logger(), "%f", dist);
             if (dist < threshold_)
             {
-                geometry_msgs::msg::Pose rel_pose;
-                rel_pose.position.x = msg->pose.position.x - this->current_pose_x_;
-                rel_pose.position.y = msg->pose.position.y - this->current_pose_y_;
-                rel_pose.position.z = msg->pose.position.z - this->current_pose_z_;
-                std::string output = std::to_string(rel_pose.position.x) + ";" 
-                                    + std::to_string(rel_pose.position.y) + ";"
-                                    + std::to_string(rel_pose.position.z);
+                // geometry_msgs::msg::Pose rel_pose;
+                // rel_pose.position.x = msg->pose.position.x - this->current_pose_x_;
+                // rel_pose.position.y = msg->pose.position.y - this->current_pose_y_;
+                // rel_pose.position.z = msg->pose.position.z - this->current_pose_z_;
+                std::string output = std::to_string(msg->pose.position.x) + ";" 
+                                   + std::to_string(msg->pose.position.y) + ";"
+                                   + std::to_string(msg->pose.position.z);
                 setOutput("pose", output);
                 is_target_ = true;
             }
