@@ -8,13 +8,14 @@
   <license>BSD-3-Clause</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <depend>as2_core</depend>
-  <depend>rclcpp</depend>
-  <depend>rclcpp_action</depend>
-  <depend>as2_msgs</depend>
   <depend>behaviortree_cpp_v3</depend>
   <depend>nav2_behavior_tree</depend>
   <depend>nav2_msgs</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_action</depend>
+  <depend>as2_core</depend>
+  <depend>as2_msgs</depend>
+  <depend>std_srvs</depend>
   <depend>geometry_msgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>

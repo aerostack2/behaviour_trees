@@ -16,6 +16,7 @@ set(PROJECT_DEPENDENCIES
   rclcpp_action
   as2_core
   as2_msgs
+  std_srvs
   geometry_msgs
 )
 

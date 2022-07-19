@@ -36,7 +36,6 @@
 
 #include "behaviortree_cpp_v3/bt_factory.h"
 #include "geometry_msgs/msg/pose.hpp"
-#include "as2_msgs/action/go_to_waypoint.hpp"
 
 // Template specialization to converts a string to Position2D.
 namespace BT
