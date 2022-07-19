@@ -42,7 +42,6 @@
 #include "behaviortree_cpp_v3/condition_node.h"
 
 #include "rclcpp/rclcpp.hpp"
-#include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "as2_core/names/topics.hpp"
 
@@ -66,10 +65,10 @@ namespace as2_behaviour_tree
             rclcpp::SubscriptionOptions sub_option;
             sub_option.callback_group = callback_group_;
 
-            odometry_sub_ = node_->create_subscription<nav_msgs::msg::Odometry>(
-                as2_names::topics::self_localization::odom,
+            current_pose_sub_ = node_->create_subscription<geometry_msgs::msg::PoseStamped>(
+                as2_names::topics::self_localization::pose,
                 as2_names::topics::self_localization::qos,
-                std::bind(&IsTargetDetectedCondition::odomCallback, this, std::placeholders::_1),
+                std::bind(&IsTargetDetectedCondition::poseCallback, this, std::placeholders::_1),
                 sub_option
             );
 
@@ -121,18 +120,18 @@ namespace as2_behaviour_tree
             }
         }
 
-        void odomCallback(nav_msgs::msg::Odometry::SharedPtr msg)
+        void poseCallback(geometry_msgs::msg::PoseStamped::SharedPtr msg)
         {
-            this->current_pose_x_ = msg->pose.pose.position.x;
-            this->current_pose_y_ = msg->pose.pose.position.y;
-            this->current_pose_z_ = msg->pose.pose.position.z;
+            this->current_pose_x_ = msg->pose.position.x;
+            this->current_pose_y_ = msg->pose.position.y;
+            this->current_pose_z_ = msg->pose.position.z;
         }
 
     private:
         rclcpp::Node::SharedPtr node_;
         rclcpp::CallbackGroup::SharedPtr callback_group_;
         rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
-        rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odometry_sub_;
+        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr current_pose_sub_;
         std::string detection_topic_name_;
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr detection_sub_;
         double threshold_;
