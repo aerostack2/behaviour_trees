@@ -28,7 +28,7 @@ include_directories(
   include/${PROJECT_NAME}
 )
 
-add_executable(${PROJECT_NAME}_main src/main.cpp)
+add_executable(${PROJECT_NAME}_main src/behaviour_trees_node.cpp)
 target_include_directories(${PROJECT_NAME}_main
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
