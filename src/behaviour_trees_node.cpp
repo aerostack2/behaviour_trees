@@ -95,8 +95,6 @@ int main(int argc, char *argv[])
 
     auto tree = factory.createTreeFromFile(tree_description, config->blackboard);
 
-    RCLCPP_INFO(node->get_logger(), "%d %d", groot_client_port, groot_server_port);
-
     // LOGGERS
     BT::StdCoutLogger logger_cout(tree);
     std::shared_ptr<BT::PublisherZMQ> groot_pub = nullptr;
