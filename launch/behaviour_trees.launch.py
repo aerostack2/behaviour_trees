@@ -6,14 +6,10 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    tree = PathJoinSubstitution([
-        FindPackageShare('behaviour_trees'),
-        'resource', 'takeoff.xml'
-    ])
     return LaunchDescription([
         DeclareLaunchArgument('drone_id', description="Drone namespace", 
                               default_value=EnvironmentVariable('AEROSTACK2_SIMULATION_DRONE_ID')),
-        DeclareLaunchArgument('tree', description="Path to XML Behaviour Tree", default_value=tree),
+        DeclareLaunchArgument('tree', description="Path to XML Behaviour Tree"),
         DeclareLaunchArgument('groot_logger', description="Want to use groot logger?",
                               choices={"true", "false"}, default_value='false'),
         DeclareLaunchArgument('groot_client_port', description="Groot publisher port", default_value='1666'),
