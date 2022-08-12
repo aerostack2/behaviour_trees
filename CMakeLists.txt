@@ -25,6 +25,7 @@ set(PROJECT_DEPENDENCIES
   as2_msgs
   std_srvs
   geometry_msgs
+  sensor_msgs
 )
 
 foreach(DEPENDENCY ${PROJECT_DEPENDENCIES})
