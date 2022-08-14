@@ -46,6 +46,7 @@
 #include "behaviour_trees/action/offboard_service.hpp"
 #include "behaviour_trees/action/follow_path.hpp"
 #include "behaviour_trees/action/laser_planner.hpp"
+#include "behaviour_trees/action/area_planner.hpp"
 #include "behaviour_trees/condition/is_flying_condition.hpp"
 #include "behaviour_trees/decorator/wait_for_event.hpp"
 #include "behaviour_trees/action/send_event.hpp"
@@ -83,6 +84,7 @@ int main(int argc, char *argv[])
     factory.registerNodeType<as2_behaviour_tree::FollowPath>("FollowPath");
     factory.registerNodeType<as2_behaviour_tree::LandAction>("Land");
     factory.registerNodeType<as2_behaviour_tree::LandAction>("LaserPlanner");
+    factory.registerNodeType<as2_behaviour_tree::LandAction>("AreaPlanner");
     factory.registerNodeType<as2_behaviour_tree::IsFlyingCondition>("IsFlying");
     factory.registerNodeType<as2_behaviour_tree::WaitForEvent>("WaitForEvent");
     factory.registerNodeType<as2_behaviour_tree::SendEvent>("SendEvent");
