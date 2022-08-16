@@ -49,21 +49,11 @@ namespace as2_behaviour_tree
   class TakeoffAction : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff>
   {
   public:
-    TakeoffAction(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff>(xml_tag_name,
-                                                                      as2_names::actions::behaviours::takeoff, conf)
-    {
-    }
+    TakeoffAction(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
 
-    void on_tick()
-    {
-      getInput("height", goal_.takeoff_height);
-      getInput("speed", goal_.takeoff_speed);
-    }
+    void on_tick() override;
 
-    void on_wait_for_result(std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback)
-    {
-    }
+    void on_wait_for_result(std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
 
     static BT::PortsList providedPorts()
     {

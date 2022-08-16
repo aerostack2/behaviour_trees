@@ -51,34 +51,11 @@ namespace as2_behaviour_tree
     class IsFlyingCondition : public BT::ConditionNode
     {
     public:
-        IsFlyingCondition(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-            : BT::ConditionNode(xml_tag_name, conf)
-        {
-            node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
-            callback_group_ = node_->create_callback_group(
-                rclcpp::CallbackGroupType::MutuallyExclusive,
-                false);
-            callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
-
-            rclcpp::SubscriptionOptions sub_option;
-            sub_option.callback_group = callback_group_;
-            state_sub_ = node_->create_subscription<as2_msgs::msg::PlatformInfo>(
-                as2_names::topics::platform::info,
-                as2_names::topics::platform::qos,
-                std::bind(&IsFlyingCondition::stateCallback, this, std::placeholders::_1),
-                sub_option);
-        }
+        IsFlyingCondition(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
 
         IsFlyingCondition() = delete;
 
-        BT::NodeStatus tick()
-        {
-            callback_group_executor_.spin_some();
-            if (is_flying_) {
-                return BT::NodeStatus::SUCCESS;
-            }
-            return BT::NodeStatus::FAILURE;
-        }
+        BT::NodeStatus tick() override;
 
         static BT::PortsList providedPorts()
         {

@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       echo.hpp
- *  \brief      Echo implementation as behaviour tree node. Just for testing purpouses
+ *  \file       arm_service.cpp
+ *  \brief      Arm and disarm services implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -11,7 +11,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,7 +20,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -34,29 +34,38 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef ECHO_HPP
-#define ECHO_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-#include "rclcpp/rclcpp.hpp"
+#include "behaviour_trees/action/arm_service.hpp"
 
 namespace as2_behaviour_tree
 {
-    class Echo : public BT::SyncActionNode
+    ArmService::ArmService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
+        : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name, conf)
     {
-    public:
-        Echo(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
+    }
 
-        BT::NodeStatus tick() override;
+    void ArmService::on_tick()
+    {
+        this->request_->data = true;
+    }
 
-        static BT::PortsList providedPorts()
-        {
-            return {BT::InputPort("data")};
-        }
-    
-    private:
-        rclcpp::Node::SharedPtr node_;
-    };
+    BT::NodeStatus ArmService::on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response)
+    {
+        return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+    }
+
+    DisarmService::DisarmService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
+        : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name, conf)
+    {
+    }
+
+    void DisarmService::on_tick()
+    {
+        this->request_->data = false;
+    }
+
+    BT::NodeStatus DisarmService::on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response)
+    {
+        return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+    }
+
 } // namespace as2_behaviour_tree
-
-#endif // ECHO_HPP

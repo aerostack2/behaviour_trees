@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       echo.hpp
- *  \brief      Echo implementation as behaviour tree node. Just for testing purpouses
+ *  \file       land_action.cpp
+ *  \brief      Land action implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -11,7 +11,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,7 +20,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -34,29 +34,23 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef ECHO_HPP
-#define ECHO_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-#include "rclcpp/rclcpp.hpp"
+#include "behaviour_trees/action/land_action.hpp"
 
 namespace as2_behaviour_tree
 {
-    class Echo : public BT::SyncActionNode
+    LandAction::LandAction(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
+        : nav2_behavior_tree::BtActionNode<as2_msgs::action::Land>(xml_tag_name,
+                                                                   as2_names::actions::behaviours::land, conf)
     {
-    public:
-        Echo(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
+    }
 
-        BT::NodeStatus tick() override;
+    void LandAction::on_tick()
+    {
+        getInput("speed", goal_.land_speed);
+    }
 
-        static BT::PortsList providedPorts()
-        {
-            return {BT::InputPort("data")};
-        }
-    
-    private:
-        rclcpp::Node::SharedPtr node_;
-    };
+    void LandAction::on_wait_for_result(std::shared_ptr<const as2_msgs::action::Land::Feedback> feedback)
+    {
+    }
+
 } // namespace as2_behaviour_tree
-
-#endif // ECHO_HPP

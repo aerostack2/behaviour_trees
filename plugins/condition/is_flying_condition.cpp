@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       echo.hpp
- *  \brief      Echo implementation as behaviour tree node. Just for testing purpouses
+ *  \file       is_flying_condition.cpp
+ *  \brief      Behaviour tree node to check if an aircraft is flying
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -34,29 +34,35 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef ECHO_HPP
-#define ECHO_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-#include "rclcpp/rclcpp.hpp"
+#include "behaviour_trees/condition/is_flying_condition.hpp"
 
 namespace as2_behaviour_tree
 {
-    class Echo : public BT::SyncActionNode
-    {
-    public:
-        Echo(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
-
-        BT::NodeStatus tick() override;
-
-        static BT::PortsList providedPorts()
+        IsFlyingCondition::IsFlyingCondition(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
+            : BT::ConditionNode(xml_tag_name, conf)
         {
-            return {BT::InputPort("data")};
-        }
-    
-    private:
-        rclcpp::Node::SharedPtr node_;
-    };
-} // namespace as2_behaviour_tree
+            node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+            callback_group_ = node_->create_callback_group(
+                rclcpp::CallbackGroupType::MutuallyExclusive,
+                false);
+            callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
 
-#endif // ECHO_HPP
+            rclcpp::SubscriptionOptions sub_option;
+            sub_option.callback_group = callback_group_;
+            state_sub_ = node_->create_subscription<as2_msgs::msg::PlatformInfo>(
+                as2_names::topics::platform::info,
+                as2_names::topics::platform::qos,
+                std::bind(&IsFlyingCondition::stateCallback, this, std::placeholders::_1),
+                sub_option);
+        }
+
+        BT::NodeStatus IsFlyingCondition::tick()
+        {
+            callback_group_executor_.spin_some();
+            if (is_flying_) {
+                return BT::NodeStatus::SUCCESS;
+            }
+            return BT::NodeStatus::FAILURE;
+        }
+
+} // namespace as2_behaviour_tree

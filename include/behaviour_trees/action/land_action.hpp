@@ -49,20 +49,11 @@ namespace as2_behaviour_tree
     class LandAction : public nav2_behavior_tree::BtActionNode<as2_msgs::action::Land>
     {
     public:
-        LandAction(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-            : nav2_behavior_tree::BtActionNode<as2_msgs::action::Land>(xml_tag_name,
-                                                                       as2_names::actions::behaviours::land, conf)
-        {
-        }
+        LandAction(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
 
-        void on_tick()
-        {
-            getInput("speed", goal_.land_speed);
-        }
+        void on_tick() override;
 
-        void on_wait_for_result(std::shared_ptr<const as2_msgs::action::Land::Feedback> feedback)
-        {
-        }
+        void on_wait_for_result(std::shared_ptr<const as2_msgs::action::Land::Feedback> feedback);
 
         static BT::PortsList providedPorts()
         {

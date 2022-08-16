@@ -1,5 +1,5 @@
 /*!*******************************************************************************************
- *  \file       echo.hpp
+ *  \file       echo.cpp
  *  \brief      Echo implementation as behaviour tree node. Just for testing purpouses
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
@@ -11,7 +11,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,7 +20,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -34,29 +34,25 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef ECHO_HPP
-#define ECHO_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-#include "rclcpp/rclcpp.hpp"
+#include "behaviour_trees/action/echo.hpp"
 
 namespace as2_behaviour_tree
 {
-    class Echo : public BT::SyncActionNode
+
+    Echo::Echo(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
+        : BT::SyncActionNode(xml_tag_name, conf)
     {
-    public:
-        Echo(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
+        node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+    }
 
-        BT::NodeStatus tick() override;
+    BT::NodeStatus Echo::tick()
+    {
+        std::string data;
+        getInput("data", data);
 
-        static BT::PortsList providedPorts()
-        {
-            return {BT::InputPort("data")};
-        }
-    
-    private:
-        rclcpp::Node::SharedPtr node_;
-    };
+        RCLCPP_INFO(node_->get_logger(), "Echo: %s", data.c_str());
+
+        return BT::NodeStatus::SUCCESS;
+    }
+
 } // namespace as2_behaviour_tree
-
-#endif // ECHO_HPP

@@ -46,30 +46,18 @@
 #include "nav2_behavior_tree/bt_action_node.hpp"
 
 #include "geometry_msgs/msg/pose.hpp"
-#include "port_specialization.hpp"
+#include "behaviour_trees/port_specialization.hpp"
 
 namespace as2_behaviour_tree
 {
   class GoToAction : public nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint>
   {
   public:
-    GoToAction(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint>(xml_tag_name,
-                                                                           as2_names::actions::behaviours::gotowaypoint, conf)
-    {
-    }
+    GoToAction(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
 
-    void on_tick()
-    {
-      getInput("max_speed", goal_.max_speed);
-      getInput("yaw_angle", goal_.yaw_angle);
-      getInput("yaw_mode", goal_.yaw_mode_flag); // TODO --> runtime warning, called BT::convertFromString() for type [unsigned char]
-      getInput<geometry_msgs::msg::Pose>("pose", goal_.target_pose);
-    }
+    void on_tick() override;
 
-    void on_wait_for_result(std::shared_ptr<const as2_msgs::action::GoToWaypoint::Feedback> feedback)
-    {
-    }
+    void on_wait_for_result(std::shared_ptr<const as2_msgs::action::GoToWaypoint::Feedback> feedback);
 
     static BT::PortsList providedPorts()
     {

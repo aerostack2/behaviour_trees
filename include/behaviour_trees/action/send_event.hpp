@@ -48,36 +48,9 @@ namespace as2_behaviour_tree
     class SendEvent : public BT::SyncActionNode
     {
     public:
-        SendEvent(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-            : BT::SyncActionNode(xml_tag_name, conf)
-        {
-            node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
-            callback_group_ = node_->create_callback_group(
-                rclcpp::CallbackGroupType::MutuallyExclusive,
-                false);
-            callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
+        SendEvent(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
 
-            getInput("topic_name", topic_name_);
-
-            rclcpp::PublisherOptions pub_options;
-            pub_options.callback_group = callback_group_;
-            pub_ = node_->create_publisher<as2_msgs::msg::MissionEvent>(
-                topic_name_,
-                rclcpp::SystemDefaultsQoS(),
-                pub_options
-            );
-        }
-
-        BT::NodeStatus tick() override
-        {
-            as2_msgs::msg::MissionEvent msg;
-            msg.header.stamp = node_->get_clock()->now();
-            getInput("data", msg.data);
-            pub_->publish(msg);
-
-            return BT::NodeStatus::SUCCESS;
-        }
-
+        BT::NodeStatus tick() override;
 
         static BT::PortsList providedPorts()
         {

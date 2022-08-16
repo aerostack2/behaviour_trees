@@ -48,39 +48,21 @@ namespace as2_behaviour_tree
     class ArmService : public nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>
     {
     public:
-        ArmService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-            : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name, conf)
-        {
-        }
+        ArmService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
 
-        void on_tick()
-        {
-            this->request_->data = true;
-        }
+        void on_tick() override;
 
-        BT::NodeStatus on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response)
-        {
-            return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-        }
+        BT::NodeStatus on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response);
     };
 
     class DisarmService : public nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>
     {
     public:
-        DisarmService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-            : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name, conf)
-        {
-        }
+        DisarmService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
 
-        void on_tick()
-        {
-            this->request_->data = false;
-        }
+        void on_tick() override;
 
-        BT::NodeStatus on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response)
-        {
-            return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-        }
+        BT::NodeStatus on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response);
     };
 
 } // namespace as2_behaviour_tree

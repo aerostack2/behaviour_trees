@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       echo.hpp
- *  \brief      Echo implementation as behaviour tree node. Just for testing purpouses
+ *  \file       wait_for_event.cpp
+ *  \brief      Wait for event implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -11,7 +11,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,7 +20,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -34,29 +34,44 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef ECHO_HPP
-#define ECHO_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-#include "rclcpp/rclcpp.hpp"
+#include "behaviour_trees/decorator/wait_for_event.hpp"
 
 namespace as2_behaviour_tree
 {
-    class Echo : public BT::SyncActionNode
+    WaitForEvent::WaitForEvent(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
+        : BT::DecoratorNode(xml_tag_name, conf)
     {
-    public:
-        Echo(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
+        node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+        callback_group_ = node_->create_callback_group(
+            rclcpp::CallbackGroupType::MutuallyExclusive,
+            false);
+        callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
 
-        BT::NodeStatus tick() override;
+        getInput("topic_name", topic_name_);
 
-        static BT::PortsList providedPorts()
+        rclcpp::SubscriptionOptions sub_option;
+        sub_option.callback_group = callback_group_;
+        sub_ = node_->create_subscription<as2_msgs::msg::MissionEvent>(
+            topic_name_,
+            rclcpp::SystemDefaultsQoS(),
+            std::bind(&WaitForEvent::callback, this, std::placeholders::_1),
+            sub_option);
+    }
+
+    BT::NodeStatus WaitForEvent::tick()
+    {
+        callback_group_executor_.spin_some();
+        if (flag_)
         {
-            return {BT::InputPort("data")};
+            return child_node_->executeTick();
         }
-    
-    private:
-        rclcpp::Node::SharedPtr node_;
-    };
-} // namespace as2_behaviour_tree
+        return BT::NodeStatus::RUNNING;
+    }
 
-#endif // ECHO_HPP
+    void WaitForEvent::callback(as2_msgs::msg::MissionEvent::SharedPtr msg)
+    {
+        setOutput("result", msg->data);
+        flag_ = true;
+    }
+
+} // namespace as2_behaviour_tree

@@ -39,20 +39,20 @@
 
 #include "behaviortree_cpp_v3/bt_factory.h"
 
-#include "behaviour_trees/action/takeoff_action.hpp"
-#include "behaviour_trees/action/goto_action.hpp"
-#include "behaviour_trees/action/land_action.hpp"
-#include "behaviour_trees/action/arm_service.hpp"
-#include "behaviour_trees/action/offboard_service.hpp"
+// #include "behaviour_trees/action/takeoff_action.hpp"
+// #include "behaviour_trees/action/goto_action.hpp"
+// #include "behaviour_trees/action/land_action.hpp"
+// #include "behaviour_trees/action/arm_service.hpp"
+// #include "behaviour_trees/action/offboard_service.hpp"
 #include "behaviour_trees/action/follow_path.hpp"
 #include "behaviour_trees/action/laser_planner.hpp"
 #include "behaviour_trees/action/area_planner.hpp"
 #include "behaviour_trees/action/pick.hpp"
 #include "behaviour_trees/action/unpick.hpp"
-#include "behaviour_trees/condition/is_flying_condition.hpp"
-#include "behaviour_trees/decorator/wait_for_event.hpp"
-#include "behaviour_trees/action/send_event.hpp"
-#include "behaviour_trees/action/echo.hpp"
+// #include "behaviour_trees/condition/is_flying_condition.hpp"
+// #include "behaviour_trees/decorator/wait_for_event.hpp"
+// #include "behaviour_trees/action/send_event.hpp"
+// #include "behaviour_trees/action/echo.hpp"
 #include "behaviour_trees/condition/is_target_detected_condition.hpp"
 
 #include "rclcpp/rclcpp.hpp"
@@ -78,21 +78,21 @@ int main(int argc, char *argv[])
 
     BT::BehaviorTreeFactory factory;
 
-    factory.registerNodeType<as2_behaviour_tree::ArmService>("Arm");
-    factory.registerNodeType<as2_behaviour_tree::DisarmService>("Disarm");
-    factory.registerNodeType<as2_behaviour_tree::OffboardService>("Offboard");
-    factory.registerNodeType<as2_behaviour_tree::TakeoffAction>("TakeOff");
-    factory.registerNodeType<as2_behaviour_tree::GoToAction>("GoTo");
+    // factory.registerNodeType<as2_behaviour_tree::ArmService>("Arm");
+    // factory.registerNodeType<as2_behaviour_tree::DisarmService>("Disarm");
+    // factory.registerNodeType<as2_behaviour_tree::OffboardService>("Offboard");
+    // factory.registerNodeType<as2_behaviour_tree::TakeoffAction>("TakeOff");
+    // factory.registerNodeType<as2_behaviour_tree::GoToAction>("GoTo");
     factory.registerNodeType<as2_behaviour_tree::FollowPath>("FollowPath");
-    factory.registerNodeType<as2_behaviour_tree::LandAction>("Land");
-    factory.registerNodeType<as2_behaviour_tree::LandAction>("LaserPlanner");
+    // factory.registerNodeType<as2_behaviour_tree::LandAction>("Land");
+    factory.registerNodeType<as2_behaviour_tree::LaserPlanner>("LaserPlanner");
     factory.registerNodeType<as2_behaviour_tree::AreaPlanner>("AreaPlanner");
     factory.registerNodeType<as2_behaviour_tree::Pick>("Pick");
     factory.registerNodeType<as2_behaviour_tree::Unpick>("Unpick");
-    factory.registerNodeType<as2_behaviour_tree::IsFlyingCondition>("IsFlying");
-    factory.registerNodeType<as2_behaviour_tree::WaitForEvent>("WaitForEvent");
-    factory.registerNodeType<as2_behaviour_tree::SendEvent>("SendEvent");
-    factory.registerNodeType<as2_behaviour_tree::Echo>("Echo");
+    // factory.registerNodeType<as2_behaviour_tree::IsFlyingCondition>("IsFlying");
+    // factory.registerNodeType<as2_behaviour_tree::WaitForEvent>("WaitForEvent");
+    // factory.registerNodeType<as2_behaviour_tree::SendEvent>("SendEvent");
+    // factory.registerNodeType<as2_behaviour_tree::Echo>("Echo");
     factory.registerNodeType<as2_behaviour_tree::IsTargetDetectedCondition>("IsTargetDetected");
 
     BT::NodeConfiguration *config = new BT::NodeConfiguration();
