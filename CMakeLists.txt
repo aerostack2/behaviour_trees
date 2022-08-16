@@ -88,6 +88,7 @@ target_include_directories(${PROJECT_NAME}_main
     $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(${PROJECT_NAME}_main ${PROJECT_DEPENDENCIES})
 target_link_libraries(${PROJECT_NAME}_main BT::behaviortree_cpp_v3)
+target_link_libraries(${PROJECT_NAME}_main ${PROJECT_NAME})
 
 install(DIRECTORY
   resource
