@@ -50,10 +50,6 @@
 #include "behaviour_trees/action/echo.hpp"
 
 #include "behaviour_trees/action/follow_path.hpp"
-#include "behaviour_trees/action/laser_planner.hpp"
-#include "behaviour_trees/action/area_planner.hpp"
-#include "behaviour_trees/action/pick.hpp"
-#include "behaviour_trees/action/unpick.hpp"
 
 #include "behaviour_trees/condition/is_target_detected_condition.hpp"
 
@@ -95,11 +91,7 @@ int main(int argc, char *argv[])
     factory.registerNodeType<as2_behaviour_tree::SendEvent>("SendEvent");
     factory.registerNodeType<as2_behaviour_tree::Echo>("Echo");
 
-    factory.registerNodeType<as2_behaviour_tree::FollowPath>("FollowPath");
-    factory.registerNodeType<as2_behaviour_tree::LaserPlanner>("LaserPlanner");
-    factory.registerNodeType<as2_behaviour_tree::AreaPlanner>("AreaPlanner");
-    factory.registerNodeType<as2_behaviour_tree::Pick>("Pick");
-    factory.registerNodeType<as2_behaviour_tree::Unpick>("Unpick");
+    // factory.registerNodeType<as2_behaviour_tree::FollowPath>("FollowPath");
 
     factory.registerNodeType<as2_behaviour_tree::IsTargetDetectedCondition>("IsTargetDetected");
 
