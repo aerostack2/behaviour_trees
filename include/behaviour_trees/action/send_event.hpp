@@ -41,7 +41,8 @@
 
 #include "nav2_behavior_tree/bt_service_node.hpp"
 
-#include "as2_msgs/msg/mission_event.hpp"
+// #include "as2_msgs/msg/mission_event.hpp"
+#include "std_msgs/msg/string.hpp"
 
 namespace as2_behaviour_tree
 {
@@ -61,7 +62,7 @@ namespace as2_behaviour_tree
         rclcpp::Node::SharedPtr node_;
         rclcpp::CallbackGroup::SharedPtr callback_group_;
         rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
-        rclcpp::Publisher<as2_msgs::msg::MissionEvent>::SharedPtr pub_;
+        rclcpp::Publisher<std_msgs::msg::String>::SharedPtr pub_;
         std::string topic_name_;
     };
 } // namespace as2_behaviour_tree

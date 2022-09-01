@@ -51,7 +51,7 @@ namespace as2_behaviour_tree
 
         rclcpp::PublisherOptions pub_options;
         pub_options.callback_group = callback_group_;
-        pub_ = node_->create_publisher<as2_msgs::msg::MissionEvent>(
+        pub_ = node_->create_publisher<std_msgs::msg::String>(
             topic_name_,
             rclcpp::SystemDefaultsQoS(),
             pub_options);
@@ -59,8 +59,7 @@ namespace as2_behaviour_tree
 
     BT::NodeStatus SendEvent::tick()
     {
-        as2_msgs::msg::MissionEvent msg;
-        msg.header.stamp = node_->get_clock()->now();
+        std_msgs::msg::String msg;
         getInput("data", msg.data);
         pub_->publish(msg);
 
