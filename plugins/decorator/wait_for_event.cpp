@@ -51,7 +51,7 @@ namespace as2_behaviour_tree
 
         rclcpp::SubscriptionOptions sub_option;
         sub_option.callback_group = callback_group_;
-        sub_ = node_->create_subscription<as2_msgs::msg::MissionEvent>(
+        sub_ = node_->create_subscription<std_msgs::msg::String>(
             topic_name_,
             rclcpp::SystemDefaultsQoS(),
             std::bind(&WaitForEvent::callback, this, std::placeholders::_1),
@@ -68,7 +68,7 @@ namespace as2_behaviour_tree
         return BT::NodeStatus::RUNNING;
     }
 
-    void WaitForEvent::callback(as2_msgs::msg::MissionEvent::SharedPtr msg)
+    void WaitForEvent::callback(std_msgs::msg::String::SharedPtr msg)
     {
         setOutput("result", msg->data);
         flag_ = true;

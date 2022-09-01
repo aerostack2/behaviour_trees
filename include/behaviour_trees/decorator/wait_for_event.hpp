@@ -42,7 +42,8 @@
 #include "behaviortree_cpp_v3/decorator_node.h"
 
 #include "rclcpp/rclcpp.hpp"
-#include "as2_msgs/msg/mission_event.hpp"
+// #include "as2_msgs/msg/mission_event.hpp"
+#include "std_msgs/msg/string.hpp"
 #include "geometry_msgs/msg/pose.hpp"
 
 
@@ -62,13 +63,13 @@ namespace as2_behaviour_tree
         BT::NodeStatus tick() override;
 
     private:
-        void callback(as2_msgs::msg::MissionEvent::SharedPtr msg);
+        void callback(std_msgs::msg::String::SharedPtr msg);
 
     private:
         rclcpp::Node::SharedPtr node_;
         rclcpp::CallbackGroup::SharedPtr callback_group_;
         rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
-        rclcpp::Subscription<as2_msgs::msg::MissionEvent>::SharedPtr sub_;
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr sub_;
         std::string topic_name_;
         bool flag_ = false;
     };
