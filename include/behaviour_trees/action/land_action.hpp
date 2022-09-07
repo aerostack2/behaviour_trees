@@ -42,7 +42,7 @@
 #include "as2_core/names/actions.hpp"
 #include <as2_msgs/action/land.hpp>
 
-#include "nav2_behavior_tree/bt_action_node.hpp"
+#include "behaviour_trees/bt_action_node.hpp"
 
 namespace as2_behaviour_tree
 {

@@ -43,7 +43,7 @@
 
 #include <as2_msgs/action/go_to_waypoint.hpp>
 
-#include "nav2_behavior_tree/bt_action_node.hpp"
+#include "behaviour_trees/bt_action_node.hpp"
 
 #include "geometry_msgs/msg/pose.hpp"
 #include "behaviour_trees/port_specialization.hpp"
