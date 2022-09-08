@@ -89,6 +89,8 @@ static const char* xml_text = R"(
 
 // clang-format on
 
+#include "behaviortree_cpp_v3/loggers/bt_cout_logger.h"
+
 int main()
 {
     using namespace BT;
@@ -98,6 +100,7 @@ int main()
     factory.registerNodeType<PrintTarget>("PrintTarget");
 
     auto tree = factory.createTreeFromText(xml_text);
+    StdCoutLogger logger_cout(tree);
     tree.tickRoot();
 
 /* Expected output:

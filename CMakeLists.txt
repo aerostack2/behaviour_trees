@@ -99,6 +99,10 @@ target_link_libraries(${PROJECT_NAME}_main ${PROJECT_NAME})
 add_subdirectory(test)
 ############
 
+### NODE EMULATORS ###
+add_subdirectory(test/node_emulators)
+######################
+
 install(DIRECTORY
   resource
   DESTINATION share/${PROJECT_NAME})
