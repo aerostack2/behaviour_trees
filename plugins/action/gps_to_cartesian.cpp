@@ -45,10 +45,10 @@ namespace as2_behaviour_tree
 
     void GpsToCartesian::on_tick()
     {
-        node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+        
         getInput("latitude", geopose.pose.position.latitude);
         getInput("longitude", geopose.pose.position.longitude);
-        getInput("altitude", geopose.pose.position.altitude);
+        getInput("z", pose.position.z);
         geopath.poses.push_back(geopose);
         this->request_->geo_path = geopath;
         
@@ -56,13 +56,10 @@ namespace as2_behaviour_tree
 
     BT::NodeStatus GpsToCartesian::on_completion() 
     { 
-
-        geometry_msgs::msg::Pose pose;
-        
+      
         pose.position.x = this->future_result_.get()->path.poses.at(0).pose.position.x;
         pose.position.y = this->future_result_.get()->path.poses.at(0).pose.position.y;
-        pose.position.z = 2.0;
-
+        
         setOutput("out_pose", pose);
 
         return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;

@@ -63,14 +63,14 @@ namespace as2_behaviour_tree
         {
             return providedBasicPorts({BT::InputPort<float>("latitude"), 
                                         BT::InputPort<float>("longitude"), 
-                                        BT::InputPort<float>("altitude"),
+                                        BT::InputPort<float>("z"),
                                         BT::OutputPort<geometry_msgs::msg::Pose>("out_pose")});
         }
 
         BT::NodeStatus on_completion() override;
 
     private:
-        rclcpp::Node::SharedPtr node_;
+        geometry_msgs::msg::Pose pose;
         geographic_msgs::msg::GeoPoseStamped geopose;
         geographic_msgs::msg::GeoPath geopath;
     };

@@ -20,7 +20,7 @@
         <Action ID="GpsToCartesian">
             <input_port name="latitude" default="0.0">Latitude</input_port>
             <input_port name="longitude" default="0.0">Longitude</input_port>
-            <input_port name="altitude" default="0.0">Altitude</input_port>
+            <input_port name="z" default="0.0">Altitude</input_port>
             <output_port name="out_pose">Target Pose</output_port>
             <input_port name="service_name" default="geopath_to_path">Geopath to be converted</input_port>
         </Action>
