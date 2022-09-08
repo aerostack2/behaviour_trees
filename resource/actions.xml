@@ -17,6 +17,12 @@
             <input_port name="altitude" default="0.0">Altitude</input_port>
             <input_port name="service_name" default="set_origin">Set origin</input_port>
         </Action>
+        <Action ID="GetOrigin">
+            <output_port name="latitude">Latitude</output_port>
+            <output_port name="longitude">Longitude</output_port>
+            <output_port name="altitude">Altitude</output_port>
+            <input_port name="service_name" default="get_origin">Get origin</input_port>
+        </Action>
         <Action ID="GpsToCartesian">
             <input_port name="latitude" default="0.0">Latitude</input_port>
             <input_port name="longitude" default="0.0">Longitude</input_port>

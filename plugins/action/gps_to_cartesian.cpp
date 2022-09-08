@@ -5,6 +5,7 @@
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
  *              Rafael Pérez Seguí
+ *              Javier Melero Deza
  *
  *  \copyright  Copyright (c) 2022 Universidad Politécnica de Madrid
  *              All Rights Reserved

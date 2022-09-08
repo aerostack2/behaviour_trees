@@ -46,6 +46,7 @@ set(PLUGINS_CPP_FILES
   plugins/action/send_event.cpp
   plugins/action/echo.cpp
   plugins/action/set_origin.cpp
+  plugins/action/get_origin.cpp
   plugins/action/gps_to_cartesian.cpp
   plugins/action/gotogps_action.cpp
   plugins/condition/is_flying_condition.cpp

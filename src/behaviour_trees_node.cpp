@@ -50,6 +50,7 @@
 #include "behaviour_trees/action/send_event.hpp"
 #include "behaviour_trees/action/echo.hpp"
 #include "behaviour_trees/action/set_origin.hpp"
+#include "behaviour_trees/action/get_origin.hpp"
 #include "behaviour_trees/action/gotogps_action.hpp"
 #include "behaviour_trees/action/gps_to_cartesian.hpp"
 #include "behaviour_trees/action/follow_path.hpp"
@@ -95,6 +96,7 @@ int main(int argc, char *argv[])
     factory.registerNodeType<as2_behaviour_tree::SendEvent>("SendEvent");
     factory.registerNodeType<as2_behaviour_tree::Echo>("Echo");
     factory.registerNodeType<as2_behaviour_tree::SetOrigin>("SetOrigin");
+    factory.registerNodeType<as2_behaviour_tree::GetOrigin>("GetOrigin");
     factory.registerNodeType<as2_behaviour_tree::GpsToCartesian>("GpsToCartesian");
     factory.registerNodeType<as2_behaviour_tree::GoToGpsAction>("GoToGps");
 
