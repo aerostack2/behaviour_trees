@@ -57,7 +57,7 @@ namespace as2_behaviour_tree
             return providedBasicPorts({BT::InputPort<float>("latitude"), BT::InputPort<float>("longitude"), BT::InputPort<float>("altitude")});
         }
 
-        BT::NodeStatus on_completion(std::shared_ptr<as2_msgs::srv::SetOrigin::Response> response);
+        BT::NodeStatus on_completion() override;
     };
 } // namespace as2_behaviour_tree
 
