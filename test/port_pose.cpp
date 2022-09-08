@@ -102,9 +102,8 @@ int main()
 
 /* Expected output:
  *
-    Target positions: [ 1.1, 2.3 ]
-    Converting string: "-1;3"
-    Target positions: [ -1.0, 3.0 ]
+    Target positions: [ 1.0, 2.0, 3.0 ]
+    Target positions: [ -1.0, -2.0, -3.0 ]
 */
     return 0;
 }
