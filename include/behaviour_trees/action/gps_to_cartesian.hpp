@@ -47,6 +47,8 @@
 
 #include <iterator>
 
+#include "rclcpp/rclcpp.hpp"
+
 
 namespace as2_behaviour_tree
 {
@@ -61,13 +63,14 @@ namespace as2_behaviour_tree
         {
             return providedBasicPorts({BT::InputPort<float>("latitude"), 
                                         BT::InputPort<float>("longitude"), 
-                                        BT::InputPort<float>("altitude"),
-                                        BT::OutputPort<std::string>("out_pose")});
+                                        BT::InputPort<float>("z"),
+                                        BT::OutputPort<geometry_msgs::msg::Pose>("out_pose")});
         }
 
-        BT::NodeStatus on_completion(std::shared_ptr<as2_msgs::srv::GeopathToPath::Response> response);
+        BT::NodeStatus on_completion() override;
 
     private:
+        geometry_msgs::msg::Pose pose;
         geographic_msgs::msg::GeoPoseStamped geopose;
         geographic_msgs::msg::GeoPath geopath;
     };

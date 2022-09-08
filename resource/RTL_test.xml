@@ -3,13 +3,12 @@
     <!-- ////////// -->
     <BehaviorTree ID="BehaviorTree">
         <Sequence>
-            <Action ID="SetOrigin" altitude="0.0" latitude="52.171686" longitude="4.416643" service_name="set_origin"/>
+            <Action ID="SetOrigin" altitude="0.0" latitude="52.171776" longitude="4.416351" service_name="set_origin"/>
             <Action ID="Arm" service_name="set_arming_state"/>
             <Action ID="Offboard" service_name="set_offboard_mode"/>
             <Action ID="TakeOff" height="2" speed="0.5"/>
-            <Action ID="GpsToCartesian" altitude="0.0" latitude="52.171686" longitude="4.417813" out_pose="{var}" service_name="geopath_to_path"/>
-            <Action ID="Echo" data="{var}"/>
-            <Action ID="GoTo" max_speed="2.0" pose="4;4;2" yaw_angle="0.0" yaw_mode="0"/>
+            <Action ID="GpsToCartesian" z="2.0" latitude="52.171236" longitude="4.416350" out_pose="{var}" service_name="geopath_to_path"/>
+            <Action ID="GoTo" max_speed="2.0" pose="{var}" yaw_angle="0.0" yaw_mode="0"/>
             <Parallel failure_threshold="1" success_threshold="1">
                 <Decorator ID="WaitForAlert" alert="{}" topic_name="/drone_sim_javilino0/alert">
                     <AlwaysSuccess/>

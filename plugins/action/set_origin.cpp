@@ -52,8 +52,8 @@ namespace as2_behaviour_tree
         
     }
 
-    BT::NodeStatus SetOrigin::on_completion(std::shared_ptr<as2_msgs::srv::SetOrigin::Response> response)
+    BT::NodeStatus SetOrigin::on_completion()
     {
-        return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+        return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
     }
 } // namespace as2_behaviour_tree
