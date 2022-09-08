@@ -90,6 +90,10 @@ ament_target_dependencies(${PROJECT_NAME}_main ${PROJECT_DEPENDENCIES})
 target_link_libraries(${PROJECT_NAME}_main BT::behaviortree_cpp_v3)
 target_link_libraries(${PROJECT_NAME}_main ${PROJECT_NAME})
 
+### TEST ###
+add_subdirectory(test)
+############
+
 install(DIRECTORY
   resource
   DESTINATION share/${PROJECT_NAME})
