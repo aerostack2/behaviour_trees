@@ -45,8 +45,12 @@ set(PLUGINS_CPP_FILES
   plugins/action/land_action.cpp
   plugins/action/send_event.cpp
   plugins/action/echo.cpp
+  plugins/action/set_origin.cpp
+  plugins/action/gps_to_cartesian.cpp
+  plugins/action/gotogps_action.cpp
   plugins/condition/is_flying_condition.cpp
   plugins/decorator/wait_for_event.cpp
+  plugins/decorator/wait_for_alert.cpp
 )
 
 add_library(${PROJECT_NAME} ${PLUGINS_CPP_FILES})
