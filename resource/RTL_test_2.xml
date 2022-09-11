@@ -8,23 +8,11 @@
             <Action ID="Offboard" service_name="set_offboard_mode"/>
             <Action ID="TakeOff" height="2" speed="0.5"/>
             <Parallel failure_threshold="1" success_threshold="1">
-                <Inverter>
-                    <KeepRunningUntilFailure>
-                        <Inverter>
-                            <Decorator ID="WaitForAlert" alert="{alrt}" topic_name="alert">
-                                <IfThenElse>
-                                    <BlackboardCheckString return_on_mismatch="FAILURE" value_A="1" value_B="{alrt}">
-                                        <AlwaysSuccess/>
-                                    </BlackboardCheckString>
-                                    <AlwaysSuccess/>
-                                    <AlwaysFailure/>
-                                </IfThenElse>
-                            </Decorator>
-                        </Inverter>
-                    </KeepRunningUntilFailure>
-                </Inverter>
+                <Decorator ID="WaitForAlert" alert="{}" topic_name="/drone_sim_javilino0/alert">
+                    <AlwaysSuccess/>
+                </Decorator>
                 <Sequence>
-                    <Action ID="GpsToCartesian" latitude="52.171776" longitude="4.416936" out_pose="{var}" service_name="geopath_to_path" z="2.0"/>
+                    <Action ID="GpsToCartesian" latitude="52.172046" longitude="4.416790" out_pose="{var}" service_name="geopath_to_path" z="2.0"/>
                     <Action ID="GoTo" max_speed="1.0" pose="{var}" yaw_angle="0.0" yaw_mode="0"/>
                 </Sequence>
             </Parallel>

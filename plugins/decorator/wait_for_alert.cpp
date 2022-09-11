@@ -71,7 +71,7 @@ namespace as2_behaviour_tree
 
     void WaitForAlert::callback(as2_msgs::msg::Alert::SharedPtr msg)
     {
-        setOutput("alert", std::to_string(msg->alert_code));
+        setOutput("alert", std::to_string(msg->alert));
         flag_ = true;
     }
 
