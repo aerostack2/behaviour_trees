@@ -186,7 +186,7 @@ public:
             rc = callback_group_executor_.spin_until_future_complete(future_result_, timeout);
             if (rc == rclcpp::FutureReturnCode::SUCCESS)
             {
-                request_sent_ = false;
+                // request_sent_ = false;
                 return future_result_.get()->success ? BT::NodeStatus::RUNNING : BT::NodeStatus::FAILURE;
             }
 
