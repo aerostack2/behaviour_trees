@@ -66,7 +66,7 @@ namespace as2_behaviour_tree
             rclcpp::SubscriptionOptions sub_option;
             sub_option.callback_group = callback_group_;
 
-            current_pose_sub_ = node_->create_subscription<as2_msgs::msg::PoseStampedWithID>(
+            current_pose_sub_ = node_->create_subscription<geometry_msgs::msg::PoseStamped>(
                 as2_names::topics::self_localization::pose,
                 as2_names::topics::self_localization::qos,
                 std::bind(&IsArucoDetectedCondition::poseCallback, this, std::placeholders::_1),
@@ -121,7 +121,7 @@ namespace as2_behaviour_tree
             }
         }
 
-        void poseCallback(as2_msgs::msg::PoseStampedWithID::SharedPtr msg)
+        void poseCallback(geometry_msgs::msg::PoseStamped::SharedPtr msg)
         {
             this->current_pose_x_ = msg->pose.position.x;
             this->current_pose_y_ = msg->pose.position.y;
@@ -132,7 +132,7 @@ namespace as2_behaviour_tree
         rclcpp::Node::SharedPtr node_;
         rclcpp::CallbackGroup::SharedPtr callback_group_;
         rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
-        rclcpp::Subscription<as2_msgs::msg::PoseStampedWithID>::SharedPtr current_pose_sub_;
+        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr current_pose_sub_;
         std::string detection_topic_name_;
         rclcpp::Subscription<as2_msgs::msg::PoseStampedWithID>::SharedPtr detection_sub_;
         double threshold_;
