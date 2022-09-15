@@ -54,6 +54,8 @@
 #include "behaviour_trees/action/gotogps_action.hpp"
 #include "behaviour_trees/action/gps_to_cartesian.hpp"
 #include "behaviour_trees/action/follow_path.hpp"
+#include "behaviour_trees/action/unpick.hpp"
+#include "behaviour_trees/condition/is_aruco_detected.hpp"
 
 #include "behaviour_trees/condition/is_target_detected_condition.hpp"
 
@@ -99,6 +101,8 @@ int main(int argc, char *argv[])
     factory.registerNodeType<as2_behaviour_tree::GetOrigin>("GetOrigin");
     factory.registerNodeType<as2_behaviour_tree::GpsToCartesian>("GpsToCartesian");
     factory.registerNodeType<as2_behaviour_tree::GoToGpsAction>("GoToGps");
+    factory.registerNodeType<as2_behaviour_tree::UnPick>("UnPick");
+    factory.registerNodeType<as2_behaviour_tree::IsArucoDetectedCondition>("IsArucoDetected");
 
     // factory.registerNodeType<as2_behaviour_tree::FollowPath>("FollowPath");
 
