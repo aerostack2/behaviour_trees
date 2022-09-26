@@ -48,6 +48,7 @@
 #include <iterator>
 
 #include "rclcpp/rclcpp.hpp"
+#include "behaviour_trees/port_specialization.hpp"
 
 
 namespace as2_behaviour_tree

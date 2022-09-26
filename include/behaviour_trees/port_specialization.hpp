@@ -34,6 +34,9 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
+#ifndef PORT_SPECIALIZATION_HPP_
+#define PORT_SPECIALIZATION_HPP_
+
 #include "behaviortree_cpp_v3/bt_factory.h"
 #include "geometry_msgs/msg/pose.hpp"
 
@@ -57,3 +60,5 @@ namespace BT
         }
     }
 } // end namespace BT
+
+#endif // PORT_SPECIALIZATION_HPP_

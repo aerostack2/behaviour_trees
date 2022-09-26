@@ -43,8 +43,6 @@
 #include "behaviortree_cpp_v3/decorator_node.h"
 
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/string.hpp"
-#include "geometry_msgs/msg/pose.hpp"
 #include "as2_msgs/msg/alert.hpp"
 
 

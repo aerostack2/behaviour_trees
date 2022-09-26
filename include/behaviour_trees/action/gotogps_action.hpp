@@ -51,8 +51,6 @@
 
 #include "geometry_msgs/msg/pose.hpp"
 
-// #include "behaviour_trees/port_specialization.hpp"
-
 namespace as2_behaviour_tree
 {
   class GoToGpsAction : public nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint>
