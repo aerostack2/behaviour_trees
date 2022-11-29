@@ -33,4 +33,13 @@ def generate_launch_description():
             emulate_tty=True,
             # arguments=['--ros-args', '--log-level', 'DEBUG']
         ),
+        Node(
+            package="node_emulators",
+            executable="goto_emulator",
+            namespace=LaunchConfiguration('drone_id'),
+            parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
+            output="screen",
+            emulate_tty=True,
+            # arguments=['--ros-args', '--log-level', 'DEBUG']
+        ),
     ])
