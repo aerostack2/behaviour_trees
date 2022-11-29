@@ -1,15 +1,20 @@
-from launch import LaunchDescription
+"""Takeoff emulator launcher
+"""
 from launch_ros.actions import Node
+from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, EnvironmentVariable
 
 
 def generate_launch_description():
+    """Launch description
+    """
     return LaunchDescription([
-        DeclareLaunchArgument('drone_id', description="Drone namespace", 
+        DeclareLaunchArgument('drone_id', description="Drone namespace",
                               default_value=EnvironmentVariable('AEROSTACK2_SIMULATION_DRONE_ID')),
-        DeclareLaunchArgument('use_sim_time', description="Use sim time flag", default_value='false'),
-        
+        DeclareLaunchArgument(
+            'use_sim_time', description="Use sim time flag", default_value='false'),
+
         Node(
             package="node_emulators",
             executable="takeoff_emulator",

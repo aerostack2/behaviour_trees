@@ -11,7 +11,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,7 +20,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -40,52 +40,52 @@
 #include "as2_core/as2_basic_behaviour.hpp"
 #include "as2_core/names/actions.hpp"
 
-#include <as2_msgs/action/take_off.hpp>
+#include "as2_msgs/action/take_off.hpp"
 
-class TakeOffBehaviourEmulator : public as2::BasicBehaviour<as2_msgs::action::TakeOff>
-{
+class TakeOffBehaviourEmulator
+    : public as2::BasicBehaviour<as2_msgs::action::TakeOff> {
 public:
-    using GoalHandleTakeoff = rclcpp_action::ServerGoalHandle<as2_msgs::action::TakeOff>;
-    using PSME = as2_msgs::msg::PlatformStateMachineEvent;
+  using GoalHandleTakeoff =
+      rclcpp_action::ServerGoalHandle<as2_msgs::action::TakeOff>;
+  using PSME = as2_msgs::msg::PlatformStateMachineEvent;
 
-    TakeOffBehaviourEmulator()
-        : as2::BasicBehaviour<as2_msgs::action::TakeOff>(as2_names::actions::behaviours::takeoff)
-    {
+  TakeOffBehaviourEmulator()
+      : as2::BasicBehaviour<as2_msgs::action::TakeOff>(
+            as2_names::actions::behaviours::takeoff){
 
-    };
+        };
 
-    ~TakeOffBehaviourEmulator(){};
+  ~TakeOffBehaviourEmulator(){};
 
-    rclcpp_action::GoalResponse onAccepted(const std::shared_ptr<const as2_msgs::action::TakeOff::Goal> goal)
-    {
-        return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
-    }
+  rclcpp_action::GoalResponse onAccepted(
+      const std::shared_ptr<const as2_msgs::action::TakeOff::Goal> goal) {
+    return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+  }
 
-    rclcpp_action::CancelResponse onCancel(const std::shared_ptr<GoalHandleTakeoff> goal_handle)
-    {
-        return rclcpp_action::CancelResponse::ACCEPT;
-    }
+  rclcpp_action::CancelResponse
+  onCancel(const std::shared_ptr<GoalHandleTakeoff> goal_handle) {
+    return rclcpp_action::CancelResponse::ACCEPT;
+  }
 
-    void onExecute(const std::shared_ptr<GoalHandleTakeoff> goal_handle)
-    {
-        RCLCPP_INFO(this->get_logger(), "SLEEPING FOR 20s");
-        rclcpp::Rate rate(std::chrono::milliseconds(20000));
-        rate.sleep();
+  void onExecute(const std::shared_ptr<GoalHandleTakeoff> goal_handle) {
+    RCLCPP_INFO(this->get_logger(), "SLEEPING FOR 20s");
+    rclcpp::Rate rate(std::chrono::milliseconds(20000));
+    rate.sleep();
 
-        rclcpp::Rate sleep_rate(std::chrono::milliseconds(1000));
+    rclcpp::Rate sleep_rate(std::chrono::milliseconds(1000));
 
-        RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 3...");
-        sleep_rate.sleep();
-        RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 2...");
-        sleep_rate.sleep();
-        RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 1...");
-        sleep_rate.sleep();
+    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 3...");
+    sleep_rate.sleep();
+    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 2...");
+    sleep_rate.sleep();
+    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 1...");
+    sleep_rate.sleep();
 
-        auto result = std::make_shared<as2_msgs::action::TakeOff::Result>();
-        result->takeoff_success = true;
-        goal_handle->succeed(result);
-        RCLCPP_INFO(this->get_logger(), "TOOK OFF!!");
-    }
+    auto result = std::make_shared<as2_msgs::action::TakeOff::Result>();
+    result->takeoff_success = true;
+    goal_handle->succeed(result);
+    RCLCPP_INFO(this->get_logger(), "TOOK OFF!!");
+  }
 };
 
 #endif // TAKE_OFF_BEHAVIOUR_HPP
