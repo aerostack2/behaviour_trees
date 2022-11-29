@@ -44,12 +44,11 @@ GoToAction::GoToAction(const std::string &xml_tag_name,
 
 void GoToAction::on_tick() {
   getInput("max_speed", goal_.max_speed);
-  getInput("yaw_angle", goal_.yaw_angle);
-  getInput(
-      "yaw_mode",
-      goal_.yaw_mode_flag); // TODO --> runtime warning, called
+  getInput("yaw_angle", goal_.yaw.angle);
+  getInput("yaw_mode",
+           goal_.yaw.mode); // TODO --> runtime warning, called
                             // BT::convertFromString() for type [unsigned char]
-  getInput<geometry_msgs::msg::Pose>("pose", goal_.target_pose);
+  getInput<geometry_msgs::msg::PointStamped>("pose", goal_.target_pose);
 }
 
 void GoToAction::on_wait_for_result(

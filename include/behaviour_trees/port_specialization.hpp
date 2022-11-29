@@ -38,6 +38,7 @@
 #define PORT_SPECIALIZATION_HPP_
 
 #include "behaviortree_cpp_v3/bt_factory.h"
+#include "geometry_msgs/msg/point_stamped.hpp"
 #include "geometry_msgs/msg/pose.hpp"
 
 // Template specialization to converts a string to Position2D.
@@ -53,6 +54,21 @@ inline geometry_msgs::msg::Pose convertFromString(BT::StringView str) {
     output.position.x = convertFromString<double>(parts[0]);
     output.position.y = convertFromString<double>(parts[1]);
     output.position.z = convertFromString<double>(parts[2]);
+    return output;
+  }
+}
+
+template <>
+inline geometry_msgs::msg::PointStamped convertFromString(BT::StringView str) {
+  // We expect real numbers separated by semicolons
+  auto parts = splitString(str, ';');
+  if (parts.size() != 3) {
+    throw RuntimeError("invalid input)");
+  } else {
+    geometry_msgs::msg::PointStamped output;
+    output.point.x = convertFromString<double>(parts[0]);
+    output.point.y = convertFromString<double>(parts[1]);
+    output.point.z = convertFromString<double>(parts[2]);
     return output;
   }
 }

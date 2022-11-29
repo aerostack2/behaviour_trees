@@ -45,7 +45,7 @@
 #include "as2_msgs/action/go_to_waypoint.hpp"
 #include "as2_msgs/srv/geopath_to_path.hpp"
 #include "behaviour_trees/bt_action_node.hpp"
-#include "geometry_msgs/msg/pose.hpp"
+#include "geometry_msgs/msg/point.hpp"
 
 namespace as2_behaviour_tree {
 class GoToGpsAction
@@ -70,7 +70,7 @@ private:
   rclcpp::Node::SharedPtr node_;
   rclcpp::Client<as2_msgs::srv::GeopathToPath>::SharedPtr client;
   geographic_msgs::msg::GeoPoseStamped geopose;
-  geometry_msgs::msg::Pose pose;
+  geometry_msgs::msg::Point point;
   std::string service_name_;
 };
 

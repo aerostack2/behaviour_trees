@@ -80,18 +80,17 @@ void GoToGpsAction::on_tick() {
     return;
   }
 
-  goal_.target_pose.position.x =
+  goal_.target_pose.point.x =
       (*(result.get()->path.poses.begin())).pose.position.x;
-  goal_.target_pose.position.y =
+  goal_.target_pose.point.y =
       (*(result.get()->path.poses.begin())).pose.position.y;
-  goal_.target_pose.position.z =
+  goal_.target_pose.point.z =
       (*(result.get()->path.poses.begin())).pose.position.z;
 
   getInput("max_speed", goal_.max_speed);
-  getInput("yaw_angle", goal_.yaw_angle);
-  getInput(
-      "yaw_mode",
-      goal_.yaw_mode_flag); // TODO --> runtime warning, called
+  getInput("yaw_angle", goal_.yaw.angle);
+  getInput("yaw_mode",
+           goal_.yaw.mode); // TODO --> runtime warning, called
                             // BT::convertFromString() for type [unsigned char]
 }
 
