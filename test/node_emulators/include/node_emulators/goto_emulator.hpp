@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       takeoff_emulator.hpp
- *  \brief      Takeoff emulator class definition
+ *  \file       goto_emulator.hpp
+ *  \brief      Goto emulator class definition
  *  \authors    Miguel Fernández Cortizas
  *              Pedro Arias Pérez
  *              David Pérez Saura
@@ -34,58 +34,55 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKE_OFF_EMULATOR_HPP
-#define TAKE_OFF_EMULATOR_HPP
+#ifndef GOTO_EMULATOR_HPP
+#define GOTO_EMULATOR_HPP
 
 #include "as2_core/as2_basic_behaviour.hpp"
 #include "as2_core/names/actions.hpp"
+#include "as2_msgs/action/go_to_waypoint.hpp"
 
-#include "as2_msgs/action/take_off.hpp"
-
-class TakeOffBehaviourEmulator
-    : public as2::BasicBehaviour<as2_msgs::action::TakeOff> {
+class GotoBehaviourEmulator
+    : public as2::BasicBehaviour<as2_msgs::action::GoToWaypoint> {
 public:
-  using GoalHandleTakeoff =
-      rclcpp_action::ServerGoalHandle<as2_msgs::action::TakeOff>;
-  using PSME = as2_msgs::msg::PlatformStateMachineEvent;
+  using GoalHandleLand =
+      rclcpp_action::ServerGoalHandle<as2_msgs::action::GoToWaypoint>;
 
-  TakeOffBehaviourEmulator()
-      : as2::BasicBehaviour<as2_msgs::action::TakeOff>(
-            as2_names::actions::behaviours::takeoff){
+  GotoBehaviourEmulator()
+      : as2::BasicBehaviour<as2_msgs::action::GoToWaypoint>(
+            as2_names::actions::behaviours::gotowaypoint){
 
         };
 
-  ~TakeOffBehaviourEmulator(){};
+  ~GotoBehaviourEmulator(){};
 
   rclcpp_action::GoalResponse onAccepted(
-      const std::shared_ptr<const as2_msgs::action::TakeOff::Goal> goal) {
+      const std::shared_ptr<const as2_msgs::action::GoToWaypoint::Goal> goal) {
+    RCLCPP_INFO(this->get_logger(), "Going to %f, %f %f",
+                goal->target_pose.point.x, goal->target_pose.point.y,
+                goal->target_pose.point.z);
     return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
   }
 
   rclcpp_action::CancelResponse
-  onCancel(const std::shared_ptr<GoalHandleTakeoff> goal_handle) {
+  onCancel(const std::shared_ptr<GoalHandleLand> goal_handle) {
     return rclcpp_action::CancelResponse::ACCEPT;
   }
 
-  void onExecute(const std::shared_ptr<GoalHandleTakeoff> goal_handle) {
-    RCLCPP_INFO(this->get_logger(), "SLEEPING FOR 20s");
-    rclcpp::Rate rate(std::chrono::milliseconds(20000));
-    rate.sleep();
-
-    rclcpp::Rate sleep_rate(std::chrono::milliseconds(1000));
-
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 3...");
+  void onExecute(const std::shared_ptr<GoalHandleLand> goal_handle) {
+    rclcpp::Rate sleep_rate(std::chrono::milliseconds(5000));
     sleep_rate.sleep();
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 2...");
+    RCLCPP_INFO(this->get_logger(), "GOTO IN PROGRESS: 25\%...");
     sleep_rate.sleep();
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 1...");
+    RCLCPP_INFO(this->get_logger(), "GOTO IN PROGRESS: 50\%...");
+    sleep_rate.sleep();
+    RCLCPP_INFO(this->get_logger(), "GOTO IN PROGRESS: 75\%...");
     sleep_rate.sleep();
 
-    auto result = std::make_shared<as2_msgs::action::TakeOff::Result>();
-    result->takeoff_success = true;
+    auto result = std::make_shared<as2_msgs::action::GoToWaypoint::Result>();
+    result->goto_success = true;
     goal_handle->succeed(result);
-    RCLCPP_INFO(this->get_logger(), "TOOK OFF!!");
+    RCLCPP_INFO(this->get_logger(), "GOTO REACHED!!");
   }
 };
 
-#endif // TAKE_OFF_EMULATOR_HPP
+#endif // LAND_EMULATOR_HPP

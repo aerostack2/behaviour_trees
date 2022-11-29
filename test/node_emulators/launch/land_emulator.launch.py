@@ -1,4 +1,4 @@
-"""Takeoff emulator launcher
+"""Land emulator launcher
 """
 from launch_ros.actions import Node
 from launch import LaunchDescription
@@ -17,7 +17,7 @@ def generate_launch_description():
 
         Node(
             package="node_emulators",
-            executable="takeoff_emulator",
+            executable="land_emulator",
             namespace=LaunchConfiguration('drone_id'),
             parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
             output="screen",

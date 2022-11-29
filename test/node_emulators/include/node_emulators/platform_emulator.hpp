@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       takeoff_emulator.hpp
- *  \brief      Takeoff emulator class definition
+ *  \file       platform_emulator.hpp
+ *  \brief      Platform emulator class definition
  *  \authors    Miguel Fernández Cortizas
  *              Pedro Arias Pérez
  *              David Pérez Saura
@@ -34,58 +34,51 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKE_OFF_EMULATOR_HPP
-#define TAKE_OFF_EMULATOR_HPP
+#ifndef PLATFORM_EMULATOR_HPP
+#define PLATFORM_EMULATOR_HPP
 
 #include "as2_core/as2_basic_behaviour.hpp"
-#include "as2_core/names/actions.hpp"
+#include "as2_core/names/services.hpp"
 
-#include "as2_msgs/action/take_off.hpp"
-
-class TakeOffBehaviourEmulator
-    : public as2::BasicBehaviour<as2_msgs::action::TakeOff> {
+class PlatformEmulator : public as2::Node {
 public:
-  using GoalHandleTakeoff =
-      rclcpp_action::ServerGoalHandle<as2_msgs::action::TakeOff>;
-  using PSME = as2_msgs::msg::PlatformStateMachineEvent;
+  PlatformEmulator() : Node("platform_emulator") {
+    set_arming_state_srv_ = this->create_service<std_srvs::srv::SetBool>(
+        as2_names::services::platform::set_arming_state,
+        std::bind(&PlatformEmulator::setArmingStateSrvCall, this,
+                  std::placeholders::_1, // Corresponds to the 'request'  input
+                  std::placeholders::_2  // Corresponds to the 'response' input
+                  ));
 
-  TakeOffBehaviourEmulator()
-      : as2::BasicBehaviour<as2_msgs::action::TakeOff>(
-            as2_names::actions::behaviours::takeoff){
+    set_offboard_mode_srv_ = this->create_service<std_srvs::srv::SetBool>(
+        as2_names::services::platform::set_offboard_mode,
+        std::bind(&PlatformEmulator::setOffboardModeSrvCall, this,
+                  std::placeholders::_1, // Corresponds to the 'request'  input
+                  std::placeholders::_2  // Corresponds to the 'response' input
+                  ));
+  };
 
-        };
+  ~PlatformEmulator(){};
 
-  ~TakeOffBehaviourEmulator(){};
+private:
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr set_arming_state_srv_;
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr set_offboard_mode_srv_;
 
-  rclcpp_action::GoalResponse onAccepted(
-      const std::shared_ptr<const as2_msgs::action::TakeOff::Goal> goal) {
-    return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+  void setArmingStateSrvCall(
+      const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+      std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+    RCLCPP_INFO(this->get_logger(), "ARMED");
+    response->message = "Fake Arming: True";
+    response->success = true;
   }
 
-  rclcpp_action::CancelResponse
-  onCancel(const std::shared_ptr<GoalHandleTakeoff> goal_handle) {
-    return rclcpp_action::CancelResponse::ACCEPT;
-  }
-
-  void onExecute(const std::shared_ptr<GoalHandleTakeoff> goal_handle) {
-    RCLCPP_INFO(this->get_logger(), "SLEEPING FOR 20s");
-    rclcpp::Rate rate(std::chrono::milliseconds(20000));
-    rate.sleep();
-
-    rclcpp::Rate sleep_rate(std::chrono::milliseconds(1000));
-
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 3...");
-    sleep_rate.sleep();
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 2...");
-    sleep_rate.sleep();
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 1...");
-    sleep_rate.sleep();
-
-    auto result = std::make_shared<as2_msgs::action::TakeOff::Result>();
-    result->takeoff_success = true;
-    goal_handle->succeed(result);
-    RCLCPP_INFO(this->get_logger(), "TOOK OFF!!");
+  void setOffboardModeSrvCall(
+      const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+      std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+    RCLCPP_INFO(this->get_logger(), "OFFBOARD");
+    response->message = "Fake Offboard: True";
+    response->success = true;
   }
 };
 
-#endif // TAKE_OFF_EMULATOR_HPP
+#endif // LAND_EMULATOR_HPP
