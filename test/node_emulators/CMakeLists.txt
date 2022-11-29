@@ -32,6 +32,13 @@ include_directories(
   include/${PROJECT_NAME}
 )
 
+add_executable(platform_emulator src/platform_emulator.cpp)
+target_include_directories(platform_emulator
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(platform_emulator ${PROJECT_DEPENDENCIES})
+
 add_executable(takeoff_emulator src/takeoff_emulator.cpp)
 target_include_directories(takeoff_emulator
   PUBLIC
@@ -56,6 +63,9 @@ ament_target_dependencies(goto_emulator ${PROJECT_DEPENDENCIES})
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME})
+
+install(TARGETS platform_emulator
+  DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS takeoff_emulator
   DESTINATION lib/${PROJECT_NAME})
