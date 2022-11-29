@@ -36,34 +36,30 @@
 
 #include "behaviour_trees/action/send_event.hpp"
 
-namespace as2_behaviour_tree
-{
-    SendEvent::SendEvent(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : BT::SyncActionNode(xml_tag_name, conf)
-    {
-        node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
-        callback_group_ = node_->create_callback_group(
-            rclcpp::CallbackGroupType::MutuallyExclusive,
-            false);
-        callback_group_executor_.add_callback_group(callback_group_, node_->get_node_base_interface());
+namespace as2_behaviour_tree {
+SendEvent::SendEvent(const std::string &xml_tag_name,
+                     const BT::NodeConfiguration &conf)
+    : BT::SyncActionNode(xml_tag_name, conf) {
+  node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+  callback_group_ = node_->create_callback_group(
+      rclcpp::CallbackGroupType::MutuallyExclusive, false);
+  callback_group_executor_.add_callback_group(callback_group_,
+                                              node_->get_node_base_interface());
 
-        getInput("topic_name", topic_name_);
+  getInput("topic_name", topic_name_);
 
-        rclcpp::PublisherOptions pub_options;
-        pub_options.callback_group = callback_group_;
-        pub_ = node_->create_publisher<std_msgs::msg::String>(
-            topic_name_,
-            rclcpp::SystemDefaultsQoS(),
-            pub_options);
-    }
+  rclcpp::PublisherOptions pub_options;
+  pub_options.callback_group = callback_group_;
+  pub_ = node_->create_publisher<std_msgs::msg::String>(
+      topic_name_, rclcpp::SystemDefaultsQoS(), pub_options);
+}
 
-    BT::NodeStatus SendEvent::tick()
-    {
-        std_msgs::msg::String msg;
-        getInput("data", msg.data);
-        pub_->publish(msg);
+BT::NodeStatus SendEvent::tick() {
+  std_msgs::msg::String msg;
+  getInput("data", msg.data);
+  pub_->publish(msg);
 
-        return BT::NodeStatus::SUCCESS;
-    }
+  return BT::NodeStatus::SUCCESS;
+}
 
 } // namespace as2_behaviour_tree

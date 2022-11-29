@@ -11,7 +11,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,7 +20,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -40,33 +40,31 @@
 #include "behaviortree_cpp_v3/action_node.h"
 
 #include "as2_core/names/actions.hpp"
-
-#include <as2_msgs/action/go_to_waypoint.hpp>
+#include "as2_msgs/action/go_to_waypoint.hpp"
 
 #include "behaviour_trees/bt_action_node.hpp"
-
-#include "geometry_msgs/msg/pose.hpp"
 #include "behaviour_trees/port_specialization.hpp"
+#include "geometry_msgs/msg/pose.hpp"
 
-namespace as2_behaviour_tree
-{
-  class GoToAction : public nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint>
-  {
-  public:
-    GoToAction(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
+namespace as2_behaviour_tree {
+class GoToAction
+    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint> {
+public:
+  GoToAction(const std::string &xml_tag_name,
+             const BT::NodeConfiguration &conf);
 
-    void on_tick() override;
+  void on_tick() override;
 
-    void on_wait_for_result(std::shared_ptr<const as2_msgs::action::GoToWaypoint::Feedback> feedback);
+  void on_wait_for_result(
+      std::shared_ptr<const as2_msgs::action::GoToWaypoint::Feedback> feedback);
 
-    static BT::PortsList providedPorts()
-    {
-      return providedBasicPorts({BT::InputPort<double>("max_speed"),
-                                 BT::InputPort<double>("yaw_angle"),
-                                 BT::InputPort<geometry_msgs::msg::Pose>("pose"),
-                                 BT::InputPort<int>("yaw_mode")});
-    }
-  };
+  static BT::PortsList providedPorts() {
+    return providedBasicPorts({BT::InputPort<double>("max_speed"),
+                               BT::InputPort<double>("yaw_angle"),
+                               BT::InputPort<geometry_msgs::msg::Pose>("pose"),
+                               BT::InputPort<int>("yaw_mode")});
+  }
+};
 
 } // namespace as2_behaviour_tree
 

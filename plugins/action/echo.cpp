@@ -1,6 +1,7 @@
 /*!*******************************************************************************************
  *  \file       echo.cpp
- *  \brief      Echo implementation as behaviour tree node. Just for testing purpouses
+ *  \brief      Echo implementation as behaviour tree node. Just for testing
+ *              purpouses
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -36,23 +37,20 @@
 
 #include "behaviour_trees/action/echo.hpp"
 
-namespace as2_behaviour_tree
-{
+namespace as2_behaviour_tree {
 
-    Echo::Echo(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : BT::SyncActionNode(xml_tag_name, conf)
-    {
-        node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
-    }
+Echo::Echo(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
+    : BT::SyncActionNode(xml_tag_name, conf) {
+  node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+}
 
-    BT::NodeStatus Echo::tick()
-    {
-        std::string data;
-        getInput("data", data);
+BT::NodeStatus Echo::tick() {
+  std::string data;
+  getInput("data", data);
 
-        RCLCPP_INFO(node_->get_logger(), "Echo: %s", data.c_str());
+  RCLCPP_INFO(node_->get_logger(), "Echo: %s", data.c_str());
 
-        return BT::NodeStatus::SUCCESS;
-    }
+  return BT::NodeStatus::SUCCESS;
+}
 
 } // namespace as2_behaviour_tree

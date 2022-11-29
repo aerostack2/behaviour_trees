@@ -36,36 +36,29 @@
 
 #include "behaviour_trees/action/arm_service.hpp"
 
-namespace as2_behaviour_tree
-{
-    ArmService::ArmService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name, conf)
-    {
-    }
+namespace as2_behaviour_tree {
+ArmService::ArmService(const std::string &xml_tag_name,
+                       const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name,
+                                                                conf) {}
 
-    void ArmService::on_tick()
-    {
-        this->request_->data = true;
-    }
+void ArmService::on_tick() { this->request_->data = true; }
 
-    BT::NodeStatus ArmService::on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response)
-    {
-        return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-    }
+BT::NodeStatus ArmService::on_completion(
+    std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+  return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+}
 
-    DisarmService::DisarmService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name, conf)
-    {
-    }
+DisarmService::DisarmService(const std::string &xml_tag_name,
+                             const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name,
+                                                                conf) {}
 
-    void DisarmService::on_tick()
-    {
-        this->request_->data = false;
-    }
+void DisarmService::on_tick() { this->request_->data = false; }
 
-    BT::NodeStatus DisarmService::on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response)
-    {
-        return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-    }
+BT::NodeStatus DisarmService::on_completion(
+    std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+  return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+}
 
 } // namespace as2_behaviour_tree

@@ -36,21 +36,17 @@
 
 #include "behaviour_trees/action/offboard_service.hpp"
 
-namespace as2_behaviour_tree
-{
-    OffboardService::OffboardService(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name, conf)
-    {
-    }
+namespace as2_behaviour_tree {
+OffboardService::OffboardService(const std::string &xml_tag_name,
+                                 const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name,
+                                                                conf) {}
 
-    void OffboardService::on_tick()
-    {
-        this->request_->data = true;
-    }
+void OffboardService::on_tick() { this->request_->data = true; }
 
-    BT::NodeStatus OffboardService::on_completion(std::shared_ptr<std_srvs::srv::SetBool::Response> response)
-    {
-        return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-    }
+BT::NodeStatus OffboardService::on_completion(
+    std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+  return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+}
 
 } // namespace as2_behaviour_tree

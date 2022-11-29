@@ -12,7 +12,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -21,7 +21,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -38,40 +38,37 @@
 #ifndef WAIT_FOR_ALERT_CONDITION_HPP
 #define WAIT_FOR_ALERT_CONDITION_HPP
 
-#include <string>   
+#include <string>
 
 #include "behaviortree_cpp_v3/decorator_node.h"
 
-#include "rclcpp/rclcpp.hpp"
 #include "as2_msgs/msg/alert.hpp"
+#include "rclcpp/rclcpp.hpp"
 
+namespace as2_behaviour_tree {
+class WaitForAlert : public BT::DecoratorNode {
+public:
+  WaitForAlert(const std::string &xml_tag_name,
+               const BT::NodeConfiguration &conf);
 
-namespace as2_behaviour_tree
-{
-    class WaitForAlert : public BT::DecoratorNode
-    {
-    public:
-        WaitForAlert(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
+  static BT::PortsList providedPorts() {
+    return {BT::InputPort<std::string>("topic_name"), BT::OutputPort("alert")};
+  }
 
-        static BT::PortsList providedPorts()
-        {
-            return {BT::InputPort<std::string>("topic_name"), BT::OutputPort("alert")};
-        }
+private:
+  BT::NodeStatus tick() override;
 
-    private:
-        BT::NodeStatus tick() override;
+private:
+  void callback(as2_msgs::msg::Alert::SharedPtr msg);
 
-    private:
-        void callback(as2_msgs::msg::Alert::SharedPtr msg);
-
-    private:
-        rclcpp::Node::SharedPtr node_;
-        rclcpp::CallbackGroup::SharedPtr callback_group_;
-        rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
-        rclcpp::Subscription<as2_msgs::msg::Alert>::SharedPtr sub_;
-        std::string topic_name_;
-        bool flag_ = false;
-    };
+private:
+  rclcpp::Node::SharedPtr node_;
+  rclcpp::CallbackGroup::SharedPtr callback_group_;
+  rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
+  rclcpp::Subscription<as2_msgs::msg::Alert>::SharedPtr sub_;
+  std::string topic_name_;
+  bool flag_ = false;
+};
 
 } // namespace as2_behaviour_tree
 

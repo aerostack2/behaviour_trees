@@ -37,25 +37,22 @@
 
 #include "behaviour_trees/action/get_origin.hpp"
 
-namespace as2_behaviour_tree
-{
-    GetOrigin::GetOrigin(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : nav2_behavior_tree::BtServiceNode<as2_msgs::srv::GetOrigin>(xml_tag_name, conf)
-    {
-    }
+namespace as2_behaviour_tree {
+GetOrigin::GetOrigin(const std::string &xml_tag_name,
+                     const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<as2_msgs::srv::GetOrigin>(xml_tag_name,
+                                                                  conf) {}
 
-    void GetOrigin::on_tick()
-    {
+void GetOrigin::on_tick() {
 
-        this->request_->structure_needs_at_least_one_member = 0;
-        
-    }
+  this->request_->structure_needs_at_least_one_member = 0;
+}
 
-    BT::NodeStatus GetOrigin::on_completion()
-    {
-        setOutput("latitude", (float)(this->future_result_.get()->origin.latitude));
-        setOutput("longitude", (float)(this->future_result_.get()->origin.longitude));
-        setOutput("altitude", (float)(this->future_result_.get()->origin.altitude));
-        return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-    }
+BT::NodeStatus GetOrigin::on_completion() {
+  setOutput("latitude", (float)(this->future_result_.get()->origin.latitude));
+  setOutput("longitude", (float)(this->future_result_.get()->origin.longitude));
+  setOutput("altitude", (float)(this->future_result_.get()->origin.altitude));
+  return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS
+                                             : BT::NodeStatus::FAILURE;
+}
 } // namespace as2_behaviour_tree

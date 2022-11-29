@@ -37,24 +37,21 @@
 
 #include "behaviour_trees/action/set_origin.hpp"
 
-namespace as2_behaviour_tree
-{
-    SetOrigin::SetOrigin(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : nav2_behavior_tree::BtServiceNode<as2_msgs::srv::SetOrigin>(xml_tag_name, conf)
-    {
-    }
+namespace as2_behaviour_tree {
+SetOrigin::SetOrigin(const std::string &xml_tag_name,
+                     const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<as2_msgs::srv::SetOrigin>(xml_tag_name,
+                                                                  conf) {}
 
-    void SetOrigin::on_tick()
-    {
+void SetOrigin::on_tick() {
 
-        getInput("latitude", this->request_->origin.latitude);
-        getInput("longitude", this->request_->origin.longitude);
-        getInput("altitude", this->request_->origin.altitude);
-        
-    }
+  getInput("latitude", this->request_->origin.latitude);
+  getInput("longitude", this->request_->origin.longitude);
+  getInput("altitude", this->request_->origin.altitude);
+}
 
-    BT::NodeStatus SetOrigin::on_completion()
-    {
-        return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-    }
+BT::NodeStatus SetOrigin::on_completion() {
+  return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS
+                                             : BT::NodeStatus::FAILURE;
+}
 } // namespace as2_behaviour_tree

@@ -37,32 +37,31 @@
 
 #include "behaviour_trees/action/gps_to_cartesian.hpp"
 
-namespace as2_behaviour_tree
-{
-    GpsToCartesian::GpsToCartesian(const std::string &xml_tag_name, const BT::NodeConfiguration &conf)
-        : nav2_behavior_tree::BtServiceNode<as2_msgs::srv::GeopathToPath>(xml_tag_name, conf)
-    {
-    }
+namespace as2_behaviour_tree {
+GpsToCartesian::GpsToCartesian(const std::string &xml_tag_name,
+                               const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<as2_msgs::srv::GeopathToPath>(
+          xml_tag_name, conf) {}
 
-    void GpsToCartesian::on_tick()
-    {
-        
-        getInput("latitude", geopose.pose.position.latitude);
-        getInput("longitude", geopose.pose.position.longitude);
-        getInput("z", pose.position.z);
-        geopath.poses.push_back(geopose);
-        this->request_->geo_path = geopath;
-        
-    }
+void GpsToCartesian::on_tick() {
 
-    BT::NodeStatus GpsToCartesian::on_completion() 
-    { 
-      
-        pose.position.x = this->future_result_.get()->path.poses.at(0).pose.position.x;
-        pose.position.y = this->future_result_.get()->path.poses.at(0).pose.position.y;
-        
-        setOutput("out_pose", pose);
+  getInput("latitude", geopose.pose.position.latitude);
+  getInput("longitude", geopose.pose.position.longitude);
+  getInput("z", pose.position.z);
+  geopath.poses.push_back(geopose);
+  this->request_->geo_path = geopath;
+}
 
-        return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
-    }
+BT::NodeStatus GpsToCartesian::on_completion() {
+
+  pose.position.x =
+      this->future_result_.get()->path.poses.at(0).pose.position.x;
+  pose.position.y =
+      this->future_result_.get()->path.poses.at(0).pose.position.y;
+
+  setOutput("out_pose", pose);
+
+  return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS
+                                             : BT::NodeStatus::FAILURE;
+}
 } // namespace as2_behaviour_tree

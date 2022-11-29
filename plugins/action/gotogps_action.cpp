@@ -38,62 +38,64 @@
 #include "behaviour_trees/action/gotogps_action.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace as2_behaviour_tree
-{
-  GoToGpsAction::GoToGpsAction(
-      const std::string &xml_tag_name,
-      const BT::NodeConfiguration &conf)
-      : nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint>(xml_tag_name,
-                                                                         as2_names::actions::behaviours::gotowaypoint,
-                                                                         conf)
-  {
-    node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
-    
-    client = node_->create_client<as2_msgs::srv::GeopathToPath>("geopath_to_path");
+namespace as2_behaviour_tree {
+GoToGpsAction::GoToGpsAction(const std::string &xml_tag_name,
+                             const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint>(
+          xml_tag_name, as2_names::actions::behaviours::gotowaypoint, conf) {
+  node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
 
-  }
-    
+  client =
+      node_->create_client<as2_msgs::srv::GeopathToPath>("geopath_to_path");
+}
 
-  void GoToGpsAction::on_tick()
-  {
-    
-    getInput("altitude", geopose.pose.position.altitude);
-    getInput("latitude", geopose.pose.position.latitude);
-    getInput("longitude", geopose.pose.position.longitude);
-  
+void GoToGpsAction::on_tick() {
 
-    while (!client->wait_for_service(std::chrono::seconds(1))) {
+  getInput("altitude", geopose.pose.position.altitude);
+  getInput("latitude", geopose.pose.position.latitude);
+  getInput("longitude", geopose.pose.position.longitude);
+
+  while (!client->wait_for_service(std::chrono::seconds(1))) {
     if (!rclcpp::ok()) {
-        RCLCPP_ERROR(node_->get_logger(), "interrupted while waiting for the service. exiting.");
-        return;
-    }
-    RCLCPP_INFO(node_->get_logger(), "service: %s not available, waiting again...",
-                service_name_.c_str());
-    }
-    
-    auto request = std::make_shared<as2_msgs::srv::GeopathToPath::Request>();
-
-    request->geo_path.poses.push_back(geopose);
-
-    auto result = client->async_send_request(request);
-    if (rclcpp::spin_until_future_complete(node_, result, std::chrono::seconds(1)) !=
-        rclcpp::FutureReturnCode::SUCCESS) {
-      RCLCPP_WARN(node_->get_logger(), "failed to receive response from service '%s'",
-                  service_name_.c_str());
+      RCLCPP_ERROR(node_->get_logger(),
+                   "interrupted while waiting for the service. exiting.");
       return;
     }
-
-    goal_.target_pose.position.x = (*(result.get()->path.poses.begin())).pose.position.x;
-    goal_.target_pose.position.y = (*(result.get()->path.poses.begin())).pose.position.y;
-    goal_.target_pose.position.z = (*(result.get()->path.poses.begin())).pose.position.z;
-
-    getInput("max_speed", goal_.max_speed);
-    getInput("yaw_angle", goal_.yaw_angle);
-    getInput("yaw_mode", goal_.yaw_mode_flag); // TODO --> runtime warning, called BT::convertFromString() for type [unsigned char]
+    RCLCPP_INFO(node_->get_logger(),
+                "service: %s not available, waiting again...",
+                service_name_.c_str());
   }
 
-  void GoToGpsAction::on_wait_for_result(std::shared_ptr<const as2_msgs::action::GoToWaypoint::Feedback> feedback)
-  {
+  auto request = std::make_shared<as2_msgs::srv::GeopathToPath::Request>();
+
+  request->geo_path.poses.push_back(geopose);
+
+  auto result = client->async_send_request(request);
+  if (rclcpp::spin_until_future_complete(node_, result,
+                                         std::chrono::seconds(1)) !=
+      rclcpp::FutureReturnCode::SUCCESS) {
+    RCLCPP_WARN(node_->get_logger(),
+                "failed to receive response from service '%s'",
+                service_name_.c_str());
+    return;
   }
+
+  goal_.target_pose.position.x =
+      (*(result.get()->path.poses.begin())).pose.position.x;
+  goal_.target_pose.position.y =
+      (*(result.get()->path.poses.begin())).pose.position.y;
+  goal_.target_pose.position.z =
+      (*(result.get()->path.poses.begin())).pose.position.z;
+
+  getInput("max_speed", goal_.max_speed);
+  getInput("yaw_angle", goal_.yaw_angle);
+  getInput(
+      "yaw_mode",
+      goal_.yaw_mode_flag); // TODO --> runtime warning, called
+                            // BT::convertFromString() for type [unsigned char]
+}
+
+void GoToGpsAction::on_wait_for_result(
+    std::shared_ptr<const as2_msgs::action::GoToWaypoint::Feedback> feedback) {}
 
 } // namespace as2_behaviour_tree

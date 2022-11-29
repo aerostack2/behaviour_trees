@@ -11,7 +11,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,7 +20,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -36,25 +36,18 @@
 
 #include "behaviour_trees/action/takeoff_action.hpp"
 
-namespace as2_behaviour_tree
-{
-    TakeoffAction::TakeoffAction(
-        const std::string &xml_tag_name, 
-        const BT::NodeConfiguration &conf)
-    : nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff>(xml_tag_name,
-                                                                  as2_names::actions::behaviours::takeoff, 
-                                                                  conf)
-    {
-    }
+namespace as2_behaviour_tree {
+TakeoffAction::TakeoffAction(const std::string &xml_tag_name,
+                             const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff>(
+          xml_tag_name, as2_names::actions::behaviours::takeoff, conf) {}
 
-    void TakeoffAction::on_tick()
-    {
-      getInput("height", goal_.takeoff_height);
-      getInput("speed", goal_.takeoff_speed);
-    }
+void TakeoffAction::on_tick() {
+  getInput("height", goal_.takeoff_height);
+  getInput("speed", goal_.takeoff_speed);
+}
 
-    void TakeoffAction::on_wait_for_result(std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback)
-    {
-    }
+void TakeoffAction::on_wait_for_result(
+    std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback) {}
 
 } // namespace as2_behaviour_tree

@@ -36,27 +36,23 @@
 
 #include "behaviour_trees/action/goto_action.hpp"
 
-namespace as2_behaviour_tree
-{
-  GoToAction::GoToAction(
-      const std::string &xml_tag_name,
-      const BT::NodeConfiguration &conf)
-      : nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint>(xml_tag_name,
-                                                                         as2_names::actions::behaviours::gotowaypoint,
-                                                                         conf)
-  {
-  }
+namespace as2_behaviour_tree {
+GoToAction::GoToAction(const std::string &xml_tag_name,
+                       const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtActionNode<as2_msgs::action::GoToWaypoint>(
+          xml_tag_name, as2_names::actions::behaviours::gotowaypoint, conf) {}
 
-  void GoToAction::on_tick()
-  {
-    getInput("max_speed", goal_.max_speed);
-    getInput("yaw_angle", goal_.yaw_angle);
-    getInput("yaw_mode", goal_.yaw_mode_flag); // TODO --> runtime warning, called BT::convertFromString() for type [unsigned char]
-    getInput<geometry_msgs::msg::Pose>("pose", goal_.target_pose);
-  }
+void GoToAction::on_tick() {
+  getInput("max_speed", goal_.max_speed);
+  getInput("yaw_angle", goal_.yaw_angle);
+  getInput(
+      "yaw_mode",
+      goal_.yaw_mode_flag); // TODO --> runtime warning, called
+                            // BT::convertFromString() for type [unsigned char]
+  getInput<geometry_msgs::msg::Pose>("pose", goal_.target_pose);
+}
 
-  void GoToAction::on_wait_for_result(std::shared_ptr<const as2_msgs::action::GoToWaypoint::Feedback> feedback)
-  {
-  }
+void GoToAction::on_wait_for_result(
+    std::shared_ptr<const as2_msgs::action::GoToWaypoint::Feedback> feedback) {}
 
 } // namespace as2_behaviour_tree
