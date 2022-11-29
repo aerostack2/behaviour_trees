@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       takeoff_emulator.hpp
- *  \brief      Takeoff emulator class definition
+ *  \file       land_emulator.hpp
+ *  \brief      Land emulator class definition
  *  \authors    Miguel Fernández Cortizas
  *              Pedro Arias Pérez
  *              David Pérez Saura
@@ -34,58 +34,57 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKE_OFF_EMULATOR_HPP
-#define TAKE_OFF_EMULATOR_HPP
+#ifndef LAND_EMULATOR_HPP
+#define LAND_EMULATOR_HPP
 
 #include "as2_core/as2_basic_behaviour.hpp"
 #include "as2_core/names/actions.hpp"
+#include "as2_msgs/action/land.hpp"
 
-#include "as2_msgs/action/take_off.hpp"
-
-class TakeOffBehaviourEmulator
-    : public as2::BasicBehaviour<as2_msgs::action::TakeOff> {
+class LandBehaviourEmulator
+    : public as2::BasicBehaviour<as2_msgs::action::Land> {
 public:
-  using GoalHandleTakeoff =
-      rclcpp_action::ServerGoalHandle<as2_msgs::action::TakeOff>;
+  using GoalHandleLand =
+      rclcpp_action::ServerGoalHandle<as2_msgs::action::Land>;
   using PSME = as2_msgs::msg::PlatformStateMachineEvent;
 
-  TakeOffBehaviourEmulator()
-      : as2::BasicBehaviour<as2_msgs::action::TakeOff>(
-            as2_names::actions::behaviours::takeoff){
+  LandBehaviourEmulator()
+      : as2::BasicBehaviour<as2_msgs::action::Land>(
+            as2_names::actions::behaviours::land){
 
         };
 
-  ~TakeOffBehaviourEmulator(){};
+  ~LandBehaviourEmulator(){};
 
-  rclcpp_action::GoalResponse onAccepted(
-      const std::shared_ptr<const as2_msgs::action::TakeOff::Goal> goal) {
+  rclcpp_action::GoalResponse
+  onAccepted(const std::shared_ptr<const as2_msgs::action::Land::Goal> goal) {
     return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
   }
 
   rclcpp_action::CancelResponse
-  onCancel(const std::shared_ptr<GoalHandleTakeoff> goal_handle) {
+  onCancel(const std::shared_ptr<GoalHandleLand> goal_handle) {
     return rclcpp_action::CancelResponse::ACCEPT;
   }
 
-  void onExecute(const std::shared_ptr<GoalHandleTakeoff> goal_handle) {
+  void onExecute(const std::shared_ptr<GoalHandleLand> goal_handle) {
     RCLCPP_INFO(this->get_logger(), "SLEEPING FOR 20s");
     rclcpp::Rate rate(std::chrono::milliseconds(20000));
     rate.sleep();
 
     rclcpp::Rate sleep_rate(std::chrono::milliseconds(1000));
 
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 3...");
+    RCLCPP_INFO(this->get_logger(), "LAND IN 3...");
     sleep_rate.sleep();
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 2...");
+    RCLCPP_INFO(this->get_logger(), "LAND IN 2...");
     sleep_rate.sleep();
-    RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 1...");
+    RCLCPP_INFO(this->get_logger(), "LAND IN 1...");
     sleep_rate.sleep();
 
-    auto result = std::make_shared<as2_msgs::action::TakeOff::Result>();
-    result->takeoff_success = true;
+    auto result = std::make_shared<as2_msgs::action::Land::Result>();
+    result->land_success = true;
     goal_handle->succeed(result);
-    RCLCPP_INFO(this->get_logger(), "TOOK OFF!!");
+    RCLCPP_INFO(this->get_logger(), "LANDED!!");
   }
 };
 
-#endif // TAKE_OFF_EMULATOR_HPP
+#endif // LAND_EMULATOR_HPP

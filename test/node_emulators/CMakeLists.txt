@@ -39,11 +39,21 @@ target_include_directories(takeoff_emulator
     $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(takeoff_emulator ${PROJECT_DEPENDENCIES})
 
+add_executable(land_emulator src/land_emulator.cpp)
+target_include_directories(land_emulator
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(land_emulator ${PROJECT_DEPENDENCIES})
+
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME})
 
 install(TARGETS takeoff_emulator
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS land_emulator
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

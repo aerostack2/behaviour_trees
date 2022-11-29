@@ -34,3 +34,5 @@
 # IDEs
 .vscode
 build
+
+__pycache__
