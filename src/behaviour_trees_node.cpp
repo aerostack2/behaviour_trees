@@ -51,13 +51,9 @@
 #include "behaviour_trees/action/send_event.hpp"
 #include "behaviour_trees/action/set_origin.hpp"
 #include "behaviour_trees/action/takeoff_action.hpp"
-#include "behaviour_trees/action/unpick.hpp"
-#include "behaviour_trees/condition/is_aruco_detected.hpp"
 #include "behaviour_trees/condition/is_flying_condition.hpp"
 #include "behaviour_trees/decorator/wait_for_alert.hpp"
 #include "behaviour_trees/decorator/wait_for_event.hpp"
-
-#include "behaviour_trees/condition/is_target_detected_condition.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -101,14 +97,7 @@ int main(int argc, char *argv[]) {
   factory.registerNodeType<as2_behaviour_tree::GpsToCartesian>(
       "GpsToCartesian");
   factory.registerNodeType<as2_behaviour_tree::GoToGpsAction>("GoToGps");
-  factory.registerNodeType<as2_behaviour_tree::UnPick>("UnPick");
-  factory.registerNodeType<as2_behaviour_tree::IsArucoDetectedCondition>(
-      "IsArucoDetected");
-
   // factory.registerNodeType<as2_behaviour_tree::FollowPath>("FollowPath");
-
-  factory.registerNodeType<as2_behaviour_tree::IsTargetDetectedCondition>(
-      "IsTargetDetected");
 
   BT::NodeConfiguration *config = new BT::NodeConfiguration();
   // Create the blackboard that will be shared by all of the nodes in the tree
