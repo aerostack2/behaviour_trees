@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
+ *  \file       gps_to_cartesian.hpp
+ *  \brief      GPS to Cartesian implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -34,37 +34,42 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
+#ifndef GPS_TO_CARTESIAN_HPP
+#define GPS_TO_CARTESIAN_HPP
+
+#include <iterator>
 
 #include "behaviortree_cpp_v3/action_node.h"
 
-#include "behaviour_trees/bt_action_node.hpp"
-
-#include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
+#include "as2_msgs/srv/geopath_to_path.hpp"
+#include "behaviour_trees/port_specialization.hpp"
+#include "geometry_msgs/msg/pose.hpp"
+#include "nav2_behavior_tree/bt_service_node.hpp"
+#include "rclcpp/rclcpp.hpp"
 
 namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
+class GpsToCartesian
+    : public nav2_behavior_tree::BtServiceNode<as2_msgs::srv::GeopathToPath> {
 public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
+  GpsToCartesian(const std::string &xml_tag_name,
+                 const BT::NodeConfiguration &conf);
 
   void on_tick() override;
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
-
   static BT::PortsList providedPorts() {
     return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
+        {BT::InputPort<float>("latitude"), BT::InputPort<float>("longitude"),
+         BT::InputPort<float>("z"),
+         BT::OutputPort<geometry_msgs::msg::Pose>("out_pose")});
   }
 
-public:
-  std::string action_name_;
-};
+  BT::NodeStatus on_completion();
 
+private:
+  geometry_msgs::msg::Pose pose;
+  geographic_msgs::msg::GeoPoseStamped geopose;
+  geographic_msgs::msg::GeoPath geopath;
+};
 } // namespace as2_behaviour_tree
 
-#endif // TAKEOFF_ACTION_HPP
+#endif // SEND_EVENT_HPP

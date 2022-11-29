@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
+ *  \file       wait_for_event.cpp
+ *  \brief      Wait for event implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -34,37 +34,39 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-
-#include "behaviour_trees/bt_action_node.hpp"
-
-#include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
+#include "behaviour_trees/decorator/wait_for_event.hpp"
 
 namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
-public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
+WaitForEvent::WaitForEvent(const std::string &xml_tag_name,
+                           const BT::NodeConfiguration &conf)
+    : BT::DecoratorNode(xml_tag_name, conf) {
+  node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+  callback_group_ = node_->create_callback_group(
+      rclcpp::CallbackGroupType::MutuallyExclusive, false);
+  callback_group_executor_.add_callback_group(callback_group_,
+                                              node_->get_node_base_interface());
 
-  void on_tick() override;
+  getInput("topic_name", topic_name_);
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
+  rclcpp::SubscriptionOptions sub_option;
+  sub_option.callback_group = callback_group_;
+  sub_ = node_->create_subscription<std_msgs::msg::String>(
+      topic_name_, rclcpp::SystemDefaultsQoS(),
+      std::bind(&WaitForEvent::callback, this, std::placeholders::_1),
+      sub_option);
+}
 
-  static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
+BT::NodeStatus WaitForEvent::tick() {
+  callback_group_executor_.spin_some();
+  if (flag_) {
+    return child_node_->executeTick();
   }
+  return BT::NodeStatus::RUNNING;
+}
 
-public:
-  std::string action_name_;
-};
+void WaitForEvent::callback(std_msgs::msg::String::SharedPtr msg) {
+  setOutput("result", msg->data);
+  flag_ = true;
+}
 
 } // namespace as2_behaviour_tree
-
-#endif // TAKEOFF_ACTION_HPP

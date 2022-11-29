@@ -1,10 +1,11 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
+ *  \file       wait_for_alert.hpp
+ *  \brief      Wait for alert implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
  *              Rafael Pérez Seguí
+ *              Javier Melero Deza
  *
  *  \copyright  Copyright (c) 2022 Universidad Politécnica de Madrid
  *              All Rights Reserved
@@ -34,37 +35,41 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
+#ifndef WAIT_FOR_ALERT_CONDITION_HPP
+#define WAIT_FOR_ALERT_CONDITION_HPP
 
-#include "behaviortree_cpp_v3/action_node.h"
+#include <string>
 
-#include "behaviour_trees/bt_action_node.hpp"
+#include "behaviortree_cpp_v3/decorator_node.h"
 
-#include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
+#include "as2_msgs/msg/alert.hpp"
+#include "rclcpp/rclcpp.hpp"
 
 namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
+class WaitForAlert : public BT::DecoratorNode {
 public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
-
-  void on_tick() override;
-
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
+  WaitForAlert(const std::string &xml_tag_name,
+               const BT::NodeConfiguration &conf);
 
   static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
+    return {BT::InputPort<std::string>("topic_name"), BT::OutputPort("alert")};
   }
 
-public:
-  std::string action_name_;
+private:
+  BT::NodeStatus tick() override;
+
+private:
+  void callback(as2_msgs::msg::Alert::SharedPtr msg);
+
+private:
+  rclcpp::Node::SharedPtr node_;
+  rclcpp::CallbackGroup::SharedPtr callback_group_;
+  rclcpp::executors::SingleThreadedExecutor callback_group_executor_;
+  rclcpp::Subscription<as2_msgs::msg::Alert>::SharedPtr sub_;
+  std::string topic_name_;
+  bool flag_ = false;
 };
 
 } // namespace as2_behaviour_tree
 
-#endif // TAKEOFF_ACTION_HPP
+#endif // WAIT_FOR_ALERT_CONDITION_HPP

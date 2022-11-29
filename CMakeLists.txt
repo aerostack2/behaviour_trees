@@ -37,6 +37,55 @@ include_directories(
   include/${PROJECT_NAME}
 )
 
+set(PLUGINS_CPP_FILES 
+  plugins/action/takeoff_action.cpp
+  plugins/action/arm_service.cpp
+  plugins/action/offboard_service.cpp
+  plugins/action/goto_action.cpp
+  plugins/action/land_action.cpp
+  plugins/action/send_event.cpp
+  plugins/action/echo.cpp
+  plugins/action/set_origin.cpp
+  plugins/action/get_origin.cpp
+  plugins/action/gps_to_cartesian.cpp
+  plugins/action/gotogps_action.cpp
+  plugins/condition/is_flying_condition.cpp
+  plugins/decorator/wait_for_event.cpp
+  plugins/decorator/wait_for_alert.cpp
+)
+
+add_library(${PROJECT_NAME} ${PLUGINS_CPP_FILES})
+target_link_libraries(${PROJECT_NAME} BT::behaviortree_cpp_v3)
+target_include_directories(${PROJECT_NAME}
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(
+  ${PROJECT_NAME}
+  ${PROJECT_DEPENDENCIES}
+)
+
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(${PROJECT_DEPENDENCIES})
+
+ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME})
+
+
 add_executable(${PROJECT_NAME}_main src/behaviour_trees_node.cpp)
 target_include_directories(${PROJECT_NAME}_main
   PUBLIC
@@ -44,6 +93,15 @@ target_include_directories(${PROJECT_NAME}_main
     $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(${PROJECT_NAME}_main ${PROJECT_DEPENDENCIES})
 target_link_libraries(${PROJECT_NAME}_main BT::behaviortree_cpp_v3)
+target_link_libraries(${PROJECT_NAME}_main ${PROJECT_NAME})
+
+### TEST ###
+add_subdirectory(test)
+############
+
+### NODE EMULATORS ###
+add_subdirectory(test/node_emulators)
+######################
 
 install(DIRECTORY
   resource

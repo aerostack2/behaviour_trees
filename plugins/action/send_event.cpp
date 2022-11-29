@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
+ *  \file       send_event.cpp
+ *  \brief      Send event implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -34,37 +34,32 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-
-#include "behaviour_trees/bt_action_node.hpp"
-
-#include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
+#include "behaviour_trees/action/send_event.hpp"
 
 namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
-public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
+SendEvent::SendEvent(const std::string &xml_tag_name,
+                     const BT::NodeConfiguration &conf)
+    : BT::SyncActionNode(xml_tag_name, conf) {
+  node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+  callback_group_ = node_->create_callback_group(
+      rclcpp::CallbackGroupType::MutuallyExclusive, false);
+  callback_group_executor_.add_callback_group(callback_group_,
+                                              node_->get_node_base_interface());
 
-  void on_tick() override;
+  getInput("topic_name", topic_name_);
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
+  rclcpp::PublisherOptions pub_options;
+  pub_options.callback_group = callback_group_;
+  pub_ = node_->create_publisher<std_msgs::msg::String>(
+      topic_name_, rclcpp::SystemDefaultsQoS(), pub_options);
+}
 
-  static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
-  }
+BT::NodeStatus SendEvent::tick() {
+  std_msgs::msg::String msg;
+  getInput("data", msg.data);
+  pub_->publish(msg);
 
-public:
-  std::string action_name_;
-};
+  return BT::NodeStatus::SUCCESS;
+}
 
 } // namespace as2_behaviour_tree
-
-#endif // TAKEOFF_ACTION_HPP

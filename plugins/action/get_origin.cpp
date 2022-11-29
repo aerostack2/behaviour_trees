@@ -1,10 +1,11 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
+ *  \file       get_origin_service.cpp
+ *  \brief      Get Origin service implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
  *              Rafael Pérez Seguí
+ *              Javier Melero Deza
  *
  *  \copyright  Copyright (c) 2022 Universidad Politécnica de Madrid
  *              All Rights Reserved
@@ -34,37 +35,24 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-
-#include "behaviour_trees/bt_action_node.hpp"
-
-#include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
+#include "behaviour_trees/action/get_origin.hpp"
 
 namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
-public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
+GetOrigin::GetOrigin(const std::string &xml_tag_name,
+                     const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<as2_msgs::srv::GetOrigin>(xml_tag_name,
+                                                                  conf) {}
 
-  void on_tick() override;
+void GetOrigin::on_tick() {
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
+  this->request_->structure_needs_at_least_one_member = 0;
+}
 
-  static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
-  }
-
-public:
-  std::string action_name_;
-};
-
+BT::NodeStatus GetOrigin::on_completion() {
+  setOutput("latitude", (float)(this->future_result_.get()->origin.latitude));
+  setOutput("longitude", (float)(this->future_result_.get()->origin.longitude));
+  setOutput("altitude", (float)(this->future_result_.get()->origin.altitude));
+  return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS
+                                             : BT::NodeStatus::FAILURE;
+}
 } // namespace as2_behaviour_tree
-
-#endif // TAKEOFF_ACTION_HPP

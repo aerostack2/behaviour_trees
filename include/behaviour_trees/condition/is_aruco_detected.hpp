@@ -35,22 +35,22 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef IS_TARGET_DETECTED_CONDITION_HPP
-#define IS_TARGET_DETECTED_CONDITION_HPP
+#ifndef IS_ARUCO_DETECTED_HPP
+#define IS_ARUCO_DETECTED_HPP
 
 #include <string>
 
-#include "behaviortree_cpp_v3/condition_node.h"
-
 #include "as2_core/names/topics.hpp"
+#include "as2_msgs/msg/pose_stamped_with_id.hpp"
+#include "behaviortree_cpp_v3/condition_node.h"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 namespace as2_behaviour_tree {
-class IsTargetDetectedCondition : public BT::ConditionNode {
+class IsArucoDetectedCondition : public BT::ConditionNode {
 public:
-  IsTargetDetectedCondition(const std::string &xml_tag_name,
-                            const BT::NodeConfiguration &conf)
+  IsArucoDetectedCondition(const std::string &xml_tag_name,
+                           const BT::NodeConfiguration &conf)
       : BT::ConditionNode(xml_tag_name, conf) {
     node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
     callback_group_ = node_->create_callback_group(
@@ -68,19 +68,19 @@ public:
         node_->create_subscription<geometry_msgs::msg::PoseStamped>(
             as2_names::topics::self_localization::pose,
             as2_names::topics::self_localization::qos,
-            std::bind(&IsTargetDetectedCondition::poseCallback, this,
+            std::bind(&IsArucoDetectedCondition::poseCallback, this,
                       std::placeholders::_1),
             sub_option);
 
     detection_sub_ =
-        node_->create_subscription<geometry_msgs::msg::PoseStamped>(
+        node_->create_subscription<as2_msgs::msg::PoseStampedWithID>(
             detection_topic_name_, rclcpp::SystemDefaultsQoS(),
-            std::bind(&IsTargetDetectedCondition::detectionCallback, this,
+            std::bind(&IsArucoDetectedCondition::detectionCallback, this,
                       std::placeholders::_1),
             sub_option);
   }
 
-  IsTargetDetectedCondition() = delete;
+  IsArucoDetectedCondition() = delete;
 
   BT::NodeStatus tick() {
     callback_group_executor_.spin_some();
@@ -98,7 +98,7 @@ public:
   }
 
 private:
-  void detectionCallback(geometry_msgs::msg::PoseStamped::SharedPtr msg) {
+  void detectionCallback(as2_msgs::msg::PoseStampedWithID::SharedPtr msg) {
     float dist = std::sqrt(
         std::pow(abs(msg->pose.position.x) - abs(this->current_pose_x_), 2.0) +
         std::pow(abs(msg->pose.position.y) - abs(this->current_pose_y_), 2.0) +
@@ -131,7 +131,7 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr
       current_pose_sub_;
   std::string detection_topic_name_;
-  rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr
+  rclcpp::Subscription<as2_msgs::msg::PoseStampedWithID>::SharedPtr
       detection_sub_;
   double threshold_;
   bool is_target_ = false;

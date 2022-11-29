@@ -1,10 +1,11 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
+ *  \file       gps_to_cartesian_service.cpp
+ *  \brief      GPS to Cartesian service implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
  *              Rafael Pérez Seguí
+ *              Javier Melero Deza
  *
  *  \copyright  Copyright (c) 2022 Universidad Politécnica de Madrid
  *              All Rights Reserved
@@ -34,37 +35,33 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-
-#include "behaviour_trees/bt_action_node.hpp"
-
-#include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
+#include "behaviour_trees/action/gps_to_cartesian.hpp"
 
 namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
-public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
+GpsToCartesian::GpsToCartesian(const std::string &xml_tag_name,
+                               const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<as2_msgs::srv::GeopathToPath>(
+          xml_tag_name, conf) {}
 
-  void on_tick() override;
+void GpsToCartesian::on_tick() {
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
+  getInput("latitude", geopose.pose.position.latitude);
+  getInput("longitude", geopose.pose.position.longitude);
+  getInput("z", pose.position.z);
+  geopath.poses.push_back(geopose);
+  this->request_->geo_path = geopath;
+}
 
-  static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
-  }
+BT::NodeStatus GpsToCartesian::on_completion() {
 
-public:
-  std::string action_name_;
-};
+  pose.position.x =
+      this->future_result_.get()->path.poses.at(0).pose.position.x;
+  pose.position.y =
+      this->future_result_.get()->path.poses.at(0).pose.position.y;
 
+  setOutput("out_pose", pose);
+
+  return this->future_result_.get()->success ? BT::NodeStatus::SUCCESS
+                                             : BT::NodeStatus::FAILURE;
+}
 } // namespace as2_behaviour_tree
-
-#endif // TAKEOFF_ACTION_HPP

@@ -1,10 +1,11 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
+ *  \file       get_origin.hpp
+ *  \brief      Get origin implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
  *              Rafael Pérez Seguí
+ *              Javier Melero Deza
  *
  *  \copyright  Copyright (c) 2022 Universidad Politécnica de Madrid
  *              All Rights Reserved
@@ -34,37 +35,31 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
+#ifndef GET_ORIGIN_HPP
+#define GET_ORIGIN_HPP
 
 #include "behaviortree_cpp_v3/action_node.h"
 
-#include "behaviour_trees/bt_action_node.hpp"
+#include "nav2_behavior_tree/bt_service_node.hpp"
 
-#include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
+#include "as2_msgs/srv/get_origin.hpp"
 
 namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
+class GetOrigin
+    : public nav2_behavior_tree::BtServiceNode<as2_msgs::srv::GetOrigin> {
 public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
+  GetOrigin(const std::string &xml_tag_name, const BT::NodeConfiguration &conf);
 
   void on_tick() override;
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
-
   static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
+    return providedBasicPorts({BT::OutputPort<float>("latitude"),
+                               BT::OutputPort<float>("longitude"),
+                               BT::OutputPort<float>("altitude")});
   }
 
-public:
-  std::string action_name_;
+  BT::NodeStatus on_completion();
 };
-
 } // namespace as2_behaviour_tree
 
-#endif // TAKEOFF_ACTION_HPP
+#endif // SEND_EVENT_HPP

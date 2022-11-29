@@ -1,6 +1,6 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
+ *  \file       offboard_service.cpp
+ *  \brief      Offboard service implementation as behaviour tree node
  *  \authors    Pedro Arias Pérez
  *              Miguel Fernández Cortizas
  *              David Pérez Saura
@@ -34,37 +34,19 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
-
-#include "behaviortree_cpp_v3/action_node.h"
-
-#include "behaviour_trees/bt_action_node.hpp"
-
-#include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
+#include "behaviour_trees/action/offboard_service.hpp"
 
 namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
-public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
+OffboardService::OffboardService(const std::string &xml_tag_name,
+                                 const BT::NodeConfiguration &conf)
+    : nav2_behavior_tree::BtServiceNode<std_srvs::srv::SetBool>(xml_tag_name,
+                                                                conf) {}
 
-  void on_tick() override;
+void OffboardService::on_tick() { this->request_->data = true; }
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
-
-  static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
-  }
-
-public:
-  std::string action_name_;
-};
+BT::NodeStatus OffboardService::on_completion(
+    std::shared_ptr<std_srvs::srv::SetBool::Response> response) {
+  return response->success ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+}
 
 } // namespace as2_behaviour_tree
-
-#endif // TAKEOFF_ACTION_HPP

@@ -1,8 +1,8 @@
 /*!*******************************************************************************************
- *  \file       takeoff_action.hpp
- *  \brief      Takeoff action implementation as behaviour tree node
- *  \authors    Pedro Arias Pérez
- *              Miguel Fernández Cortizas
+ *  \file       takeoff_behaviour.hpp
+ *  \brief      Takeoff behaviour class definition
+ *  \authors    Miguel Fernández Cortizas
+ *              Pedro Arias Pérez
  *              David Pérez Saura
  *              Rafael Pérez Seguí
  *
@@ -11,7 +11,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
@@ -20,7 +20,7 @@
  * 3. Neither the name of the copyright holder nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
@@ -34,37 +34,58 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef TAKEOFF_ACTION_HPP
-#define TAKEOFF_ACTION_HPP
+#ifndef TAKE_OFF_BEHAVIOUR_HPP
+#define TAKE_OFF_BEHAVIOUR_HPP
 
-#include "behaviortree_cpp_v3/action_node.h"
-
-#include "behaviour_trees/bt_action_node.hpp"
-
+#include "as2_core/as2_basic_behaviour.hpp"
 #include "as2_core/names/actions.hpp"
-#include "as2_msgs/action/take_off.hpp"
 
-namespace as2_behaviour_tree {
-class TakeoffAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::TakeOff> {
+#include <as2_msgs/action/take_off.hpp>
+
+class TakeOffBehaviourEmulator : public as2::BasicBehaviour<as2_msgs::action::TakeOff>
+{
 public:
-  TakeoffAction(const std::string &xml_tag_name,
-                const BT::NodeConfiguration &conf);
+    using GoalHandleTakeoff = rclcpp_action::ServerGoalHandle<as2_msgs::action::TakeOff>;
+    using PSME = as2_msgs::msg::PlatformStateMachineEvent;
 
-  void on_tick() override;
+    TakeOffBehaviourEmulator()
+        : as2::BasicBehaviour<as2_msgs::action::TakeOff>(as2_names::actions::behaviours::takeoff)
+    {
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::TakeOff::Feedback> feedback);
+    };
 
-  static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<double>("height"), BT::InputPort<double>("speed")});
-  }
+    ~TakeOffBehaviourEmulator(){};
 
-public:
-  std::string action_name_;
+    rclcpp_action::GoalResponse onAccepted(const std::shared_ptr<const as2_msgs::action::TakeOff::Goal> goal)
+    {
+        return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+    }
+
+    rclcpp_action::CancelResponse onCancel(const std::shared_ptr<GoalHandleTakeoff> goal_handle)
+    {
+        return rclcpp_action::CancelResponse::ACCEPT;
+    }
+
+    void onExecute(const std::shared_ptr<GoalHandleTakeoff> goal_handle)
+    {
+        RCLCPP_INFO(this->get_logger(), "SLEEPING FOR 20s");
+        rclcpp::Rate rate(std::chrono::milliseconds(20000));
+        rate.sleep();
+
+        rclcpp::Rate sleep_rate(std::chrono::milliseconds(1000));
+
+        RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 3...");
+        sleep_rate.sleep();
+        RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 2...");
+        sleep_rate.sleep();
+        RCLCPP_INFO(this->get_logger(), "TAKEOFF IN 1...");
+        sleep_rate.sleep();
+
+        auto result = std::make_shared<as2_msgs::action::TakeOff::Result>();
+        result->takeoff_success = true;
+        goal_handle->succeed(result);
+        RCLCPP_INFO(this->get_logger(), "TOOK OFF!!");
+    }
 };
 
-} // namespace as2_behaviour_tree
-
-#endif // TAKEOFF_ACTION_HPP
+#endif // TAKE_OFF_BEHAVIOUR_HPP
