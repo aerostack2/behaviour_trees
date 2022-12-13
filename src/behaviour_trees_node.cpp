@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
   factory.registerNodeType<as2_behaviour_tree::GpsToCartesian>(
       "GpsToCartesian");
   factory.registerNodeType<as2_behaviour_tree::GoToGpsAction>("GoToGps");
-  // factory.registerNodeType<as2_behaviour_tree::FollowPath>("FollowPath");
+  factory.registerNodeType<as2_behaviour_tree::FollowPathAction>("FollowPath");
 
   BT::NodeConfiguration *config = new BT::NodeConfiguration();
   // Create the blackboard that will be shared by all of the nodes in the tree
