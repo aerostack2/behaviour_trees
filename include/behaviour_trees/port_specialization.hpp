@@ -40,6 +40,9 @@
 #include "behaviortree_cpp_v3/bt_factory.h"
 #include "geometry_msgs/msg/point_stamped.hpp"
 #include "geometry_msgs/msg/pose.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+
+#include "as2_msgs/msg/trajectory_waypoints.hpp"
 
 // Template specialization to converts a string to Position2D.
 namespace BT {
@@ -72,6 +75,35 @@ inline geometry_msgs::msg::PointStamped convertFromString(BT::StringView str) {
     return output;
   }
 }
+
+// TODO: generalize
+template <>
+inline as2_msgs::msg::TrajectoryWaypoints
+convertFromString(BT::StringView str) {
+  // We expect real numbers separated by semicolons
+  auto points = splitString(str, '|');
+  auto parts = splitString(points[0], ';');
+  if (parts.size() != 3) {
+    throw RuntimeError("invalid input)");
+  } else {
+    as2_msgs::msg::TrajectoryWaypoints output;
+    geometry_msgs::msg::PoseStamped mypose;
+    mypose.pose.position.x = convertFromString<double>(parts[0]);
+    mypose.pose.position.y = convertFromString<double>(parts[1]);
+    mypose.pose.position.z = convertFromString<double>(parts[2]);
+
+    auto parts_2 = splitString(points[1], ';');
+    geometry_msgs::msg::PoseStamped mypose_2;
+    mypose_2.pose.position.x = convertFromString<double>(parts_2[0]);
+    mypose_2.pose.position.y = convertFromString<double>(parts_2[1]);
+    mypose_2.pose.position.z = convertFromString<double>(parts_2[2]);
+
+    output.poses.emplace_back(mypose);
+    output.poses.emplace_back(mypose_2);
+    return output;
+  }
+}
+
 } // end namespace BT
 
 #endif // PORT_SPECIALIZATION_HPP_

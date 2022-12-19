@@ -1,9 +1,8 @@
 /*!*******************************************************************************************
- *  \file       is_target_detected_condition.hpp
- *  \brief      Behaviour tree node to check if target is detected and close
- *              enough
- *  \authors    Pedro Arias Pérez
- *              Miguel Fernández Cortizas
+ *  \file       goto_emulator.hpp
+ *  \brief      Goto emulator class definition
+ *  \authors    Miguel Fernández Cortizas
+ *              Pedro Arias Pérez
  *              David Pérez Saura
  *              Rafael Pérez Seguí
  *
@@ -35,53 +34,56 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ********************************************************************************/
 
-#ifndef FOLLOW_PATH_HPP
-#define FOLLOW_PATH_HPP
+#ifndef FOLLOW_PATH_EMULATOR_HPP
+#define FOLLOW_PATH_EMULATOR_HPP
 
-#include <string>
-
-#include "behaviortree_cpp_v3/action_node.h"
-#include "behaviour_trees/bt_action_node.hpp"
-
+#include "as2_core/as2_basic_behaviour.hpp"
 #include "as2_core/names/actions.hpp"
 #include "as2_msgs/action/follow_path.hpp"
-#include "as2_msgs/msg/trajectory_waypoints.hpp"
 
-namespace as2_behaviour_tree {
-class FollowPathAction
-    : public nav2_behavior_tree::BtActionNode<as2_msgs::action::FollowPath> {
+class FollowPathBehaviourEmulator
+    : public as2::BasicBehaviour<as2_msgs::action::FollowPath> {
 public:
-  FollowPathAction(const std::string &xml_tag_name,
-                   const BT::NodeConfiguration &conf)
-      : nav2_behavior_tree::BtActionNode<as2_msgs::action::FollowPath>(
-            xml_tag_name, as2_names::actions::behaviours::followpath, conf) {}
+  using GoalHandleFollowPath =
+      rclcpp_action::ServerGoalHandle<as2_msgs::action::FollowPath>;
 
-  void on_tick() {
-    getInput("path", path_);
-    getInput("speed", max_speed_);
-    getInput("yaw_mode", yaw_mode_);
-    goal_.trajectory_waypoints.poses =
-        path_.poses; // TODO: improve with port_specialization
-    goal_.trajectory_waypoints.max_speed = max_speed_;
-    goal_.trajectory_waypoints.yaw_mode =
-        as2_msgs::msg::TrajectoryWaypoints::KEEP_YAW;
+  FollowPathBehaviourEmulator()
+      : as2::BasicBehaviour<as2_msgs::action::FollowPath>(
+            as2_names::actions::behaviours::followpath){
+
+        };
+
+  ~FollowPathBehaviourEmulator(){};
+
+  rclcpp_action::GoalResponse onAccepted(
+      const std::shared_ptr<const as2_msgs::action::FollowPath::Goal> goal) {
+    // RCLCPP_INFO(this->get_logger(), "Going to %f, %f %f",
+    //             goal->target_pose.point.x, goal->target_pose.point.y,
+    //             goal->target_pose.point.z);
+    RCLCPP_INFO(this->get_logger(), "Follow path executing");
+    return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
   }
 
-  static BT::PortsList providedPorts() {
-    return providedBasicPorts(
-        {BT::InputPort<as2_msgs::msg::TrajectoryWaypoints>("path"),
-         BT::InputPort<double>("speed"), BT::OutputPort<int>("yaw_mode")});
+  rclcpp_action::CancelResponse
+  onCancel(const std::shared_ptr<GoalHandleFollowPath> goal_handle) {
+    return rclcpp_action::CancelResponse::ACCEPT;
   }
 
-  void on_wait_for_result(
-      std::shared_ptr<const as2_msgs::action::FollowPath::Feedback> feedback) {}
+  void onExecute(const std::shared_ptr<GoalHandleFollowPath> goal_handle) {
+    rclcpp::Rate sleep_rate(std::chrono::milliseconds(5000));
+    sleep_rate.sleep();
+    RCLCPP_INFO(this->get_logger(), "Follow Path IN PROGRESS: 25\%...");
+    sleep_rate.sleep();
+    RCLCPP_INFO(this->get_logger(), "FOLLOW PATH IN PROGRESS: 50\%...");
+    sleep_rate.sleep();
+    RCLCPP_INFO(this->get_logger(), "FOLLOWPATH IN PROGRESS: 75\%...");
+    sleep_rate.sleep();
 
-private:
-  as2_msgs::msg::TrajectoryWaypoints path_;
-  double max_speed_;
-  int yaw_mode_;
+    auto result = std::make_shared<as2_msgs::action::FollowPath::Result>();
+    result->follow_path_success = true;
+    goal_handle->succeed(result);
+    RCLCPP_INFO(this->get_logger(), "GOTO REACHED!!");
+  }
 };
 
-} // namespace as2_behaviour_tree
-
-#endif // FOLLOW_PATH_HPP
+#endif // FOLLOW_PATH_EMULATOR_HPP
